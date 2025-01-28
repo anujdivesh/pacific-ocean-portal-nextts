@@ -11,7 +11,7 @@ RUN npm install --global pm2
 COPY ./package*.json ./
 
 # Install dependencies
-RUN npm install --production
+RUN npm install
 
 # Copy all files
 COPY ./ ./
@@ -20,7 +20,7 @@ RUN chmod -R 755 /usr/app && \
     chmod -R 755 /usr/app/public
 
 # Build app
-RUN npm run build
+RUN npm run build --omit-dev
 
 # Expose the listening port
 EXPOSE 3000
