@@ -28,11 +28,11 @@ const NestedAccordion = ({ data, openIds }) => {
           display: 'flex',
           justifyContent: 'space-between', // Make sure header text and arrow are spaced out
           alignItems: 'center',
-          padding: '1px 2px',  // Padding for space around text and icon
+          padding: '1px 1px',  // Padding for space around text and icon
           cursor: 'pointer',
           fontSize: '14px', // Optional: Add background for contrast
-          borderRadius: '10px', // Make sure the header has sharp edges
-          marginBottom: '5px',  // Margin between items
+          borderRadius: '0px', // Make sure the header has sharp edges
+          marginBottom: '0px',  // Margin between items
         }}
         onClick={() => setActiveKey(activeKey === eventKey ? null : eventKey)} // Toggle open/close
       >
@@ -45,24 +45,50 @@ const NestedAccordion = ({ data, openIds }) => {
   // Recursive function to render items
   const renderAccordionItems = (items) => {
     return items.map((item) => (
-      <Accordion.Item eventKey={item.id} key={item.id} style={{ borderRadius: 0,margin:0 }}>
-        <Card style={{ borderRadius: 0,margin:0 }}>
-          {/* Use Card.Header for the accordion header */}
-          <Card.Header 
+      <Accordion.Item
+        eventKey={item.id}
+        key={item.id}
+        style={{
+          marginBottom: 0,
+          borderRight: '1px solid #ccc', // Right border for the accordion item
+          borderBottom: '1px solid #ccc', // Bottom border for the accordion item
+        }}
+      >
+        <Card
+          style={{
+            marginBottom: 0,
+            border: 'none', // Remove default borders
+          }}
+        >
+          <Card.Header
             style={{
               borderRadius: 0,
-              backgroundColor: activeKey === item.id ? '#E7F1FF' : 'transparent', // Blue tint when open
+              backgroundColor: activeKey === item.id ? '#E7F1FF' : 'transparent',
               color: activeKey === item.id ? '#0D6EFD' : 'black',
-              transition: 'background-color 0.3s ease', // Smooth transition for background color
+              transition: 'background-color 0.3s ease',
+              marginBottom: 0,
+              padding: '10px 15px',
+              borderBottom: 'none', // Remove bottom border from header
             }}
           >
             <CustomToggle eventKey={item.id}>
               {item.display_title}
             </CustomToggle>
           </Card.Header>
-
+  
           <Accordion.Collapse eventKey={item.id}>
-            <Card.Body style={{ paddingLeft: 20, paddingRight: 5, paddingTop:2,paddingBottom:2, backgroundColor: '#F8F8F8', borderRadius: 0 }}>
+            <Card.Body
+              style={{
+                paddingLeft: 20,
+                paddingRight: 5,
+                paddingTop: 2,
+                paddingBottom: 2,
+                backgroundColor: '#F8F8F8',
+                borderRadius: 0,
+                marginBottom: 0,
+                borderTop: 'none', // Remove top border from body
+              }}
+            >
               {item.content.map((contentItem) => (
                 <div
                   className={`flex-container ${activeItemId === contentItem.id ? 'active' : ''}`}
@@ -70,10 +96,11 @@ const NestedAccordion = ({ data, openIds }) => {
                   onClick={() => handleClick(contentItem)}
                   style={{
                     cursor: 'pointer',
-                    backgroundColor: activeItemId === contentItem.id ? '#d3f4ff' : 'transparent', // Highlight if active
+                    backgroundColor: activeItemId === contentItem.id ? '#d3f4ff' : 'transparent',
                     borderRadius: '0px',
                     padding: '2px',
-                    fontSize: 13
+                    fontSize: 13,
+                    marginBottom: 0,
                   }}
                 >
                   <div className="item">{contentItem.name}</div>
@@ -97,7 +124,8 @@ const NestedAccordion = ({ data, openIds }) => {
       </Accordion.Item>
     ));
   };
-
+  
+  
   return (
     <>
       {data.length === 0 ? (

@@ -5,21 +5,24 @@ import { Modal, Button,Row,Col, Accordion, AccordionItem, AccordionHeader, Accor
 import L from 'leaflet';
 import { useAppSelector, useAppDispatch, useAppStore } from '@/app/GlobalRedux/hooks'
 import '@/components/functions/L.TileLayer.BetterWMS';
-import { setCenter, setZoom, setBounds,addLayer, removeLayer,setBaseMapLayer,setEEZEnable,setCoastlineEnable } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { setCenter, setZoom, setBounds,addLayer, removeLayer,setBaseMapLayer,setEEZEnable,setCoastlineEnable,setCityNameEnable } from '@/app/GlobalRedux/Features/map/mapSlice';
 import addWMSTileLayer from '../functions/addWMSTileLayer';
 import "leaflet-bing-layer";
 import '@/components/css/legend.css';
 import { get_url } from '@/components/json/urls';
+
 const MapBox = () => {
     const mapRef = useRef();
     const dispatch = useAppDispatch();
-    const { center, zoom, bounds, maxBounds, layers, basemap, eezoverlay,enable_eez,enable_coastline,coastlineoverlay } = useAppSelector((state) => state.mapbox);
+    const { center, zoom, bounds, maxBounds, layers, basemap, eezoverlay,enable_eez,enable_coastline,coastlineoverlay,citynamesoverlay,enable_citynames } = useAppSelector((state) => state.mapbox);
     const isBing = useRef(false); 
     const [selectedOption, setSelectedOption] = useState('opentopo'); 
     const [checkboxChecked, setCheckboxChecked] = useState(true);
     const [checkboxCheckedCoast, setCheckboxCheckedCoast] = useState(true);
+    const [checkboxCheckedCity, setCheckboxCheckedCity] = useState(false);
     const [wmsLayer, setWmsLayer] = useState(null);
     const [wmsLayer2, setWmsLayer2] = useState(null);
+    const [wmsLayer3, setWmsLayer3] = useState(null);
     const [showTime, setShowTime] = useState(false);
     const legendColorRef = useRef();
     const [wmsLayerGroup, setWmsLayerGroup] = useState(null); 
@@ -98,6 +101,14 @@ const MapBox = () => {
             ${checkboxCheckedCoast ? 'checked' : ''}
           /> Pacific Coastline
         </label>
+         <br/>
+        <label>
+          <input
+            id="city-check" 
+            type="checkbox"
+            ${checkboxCheckedCity ? 'checked' : ''}
+          /> City Names
+        </label>
 
         `;
       
@@ -107,6 +118,7 @@ const MapBox = () => {
         const bingRadio = div.querySelector("#bing-radio");
         const eezCheck = div.querySelector("#eez-check");
         const coastCheck = div.querySelector("#coast-check");
+        const citynameCheck = div.querySelector("#city-check");
       
         // Add event listeners to the radio buttons
         opentopoRadio.addEventListener("change", handleRadioChange);
@@ -114,6 +126,7 @@ const MapBox = () => {
         bingRadio.addEventListener("change", handleRadioChange);
         eezCheck.addEventListener("change", handleCheckboxChange);
         coastCheck.addEventListener("change", handleCheckboxChangeCoast);
+        citynameCheck.addEventListener("change", handleCheckboxChangeCity);
         // Return the div to Leaflet
         return div;
       };
@@ -284,7 +297,7 @@ const MapBox = () => {
           console.log(err.message);
         } 
       };
-
+/*
      if(enable_eez){
      const newWmsLayer = L.tileLayer.wms(eezoverlay.url, {
         layers: eezoverlay.layer, // Replace with your WMS layer name
@@ -293,9 +306,6 @@ const MapBox = () => {
       }).addTo(mapRef.current);
     //fetchData()
 
-
-
-      
     }
     else{
       if (wmsLayer) {
@@ -317,11 +327,71 @@ const MapBox = () => {
         setWmsLayer2(null);
       }
     }
+    if(enable_citynames){
+      const newWmsLayer3 = L.tileLayer.wms(citynamesoverlay.url, {
+        layers: citynamesoverlay.layer, // Replace with your WMS layer name
+        format: 'image/png',
+        transparent: true,
+      }).addTo(mapRef.current);
+      setWmsLayer3(newWmsLayer3);
+    }
+    else{
+      if (wmsLayer3) {
+        mapRef.current.removeLayer(wmsLayer3);
+        setWmsLayer3(null);
+      }
+    }*/
 
         return () => {
           mapRef.current.remove();
         };
-      }, [layers,basemap,enable_eez,enable_coastline, bounds]);
+      }, [layers,basemap, bounds]);
+
+
+      useEffect(() => {
+        if (enable_eez) {
+          const newWmsLayer = L.tileLayer.wms(eezoverlay.url, {
+            layers: eezoverlay.layer, // Replace with your WMS layer name
+            format: 'image/png',
+            transparent: true,
+          }).addTo(mapRef.current);
+          setWmsLayer(newWmsLayer);
+        } else {
+          if (wmsLayer) {
+            mapRef.current.removeLayer(wmsLayer);
+            setWmsLayer(null);
+          }
+        }
+        if(enable_coastline){
+          const newWmsLayer2 = L.tileLayer.wms(coastlineoverlay.url, {
+            layers: coastlineoverlay.layer, // Replace with your WMS layer name
+            format: 'image/png',
+            transparent: true,
+          }).addTo(mapRef.current);
+          setWmsLayer2(newWmsLayer2);
+        }
+        else{
+          if (wmsLayer2) {
+            mapRef.current.removeLayer(wmsLayer2);
+            setWmsLayer2(null);
+          }
+        }
+        if(enable_citynames){
+          const newWmsLayer3 = L.tileLayer.wms(citynamesoverlay.url, {
+            layers: citynamesoverlay.layer, // Replace with your WMS layer name
+            format: 'image/png',
+            transparent: true,
+          }).addTo(mapRef.current);
+          setWmsLayer3(newWmsLayer3);
+        }
+        else{
+          if (wmsLayer3) {
+            mapRef.current.removeLayer(wmsLayer3);
+            setWmsLayer3(null);
+          }
+        }
+
+      }, [layers,basemap,enable_eez,bounds,enable_citynames,enable_coastline]);
 
       const handleRadioChange = (event) => {
       //  console.log(event.target.value)
@@ -364,6 +434,19 @@ const MapBox = () => {
           dispatch(setCoastlineEnable(false));
         }
       };
+
+      const handleCheckboxChangeCity = (event) => {
+        setCheckboxCheckedCity(event.target.checked);
+        const isChecked = event.target.checked;
+      
+       if (isChecked) {
+        dispatch(setCityNameEnable(true));
+       
+        } else {
+          dispatch(setCityNameEnable(false));
+        }
+      };
+
 
    
 

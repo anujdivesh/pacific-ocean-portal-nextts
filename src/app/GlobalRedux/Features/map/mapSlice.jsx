@@ -19,8 +19,17 @@ const mapSlice = createSlice({
       url: 'https://opmgeoserver.gem.spc.int/geoserver/spc/wms',
       layer: 'spc:Pacific_Coastlines_openstreet_polygon',
     },
+    citynamesoverlay: {
+      url: 'https://opmgeoserver.gem.spc.int/geoserver/spc/wms',
+      layer: 'spc:pacific_islands_capitals',
+    },
+   // citynamesoverlay: {
+   //   url: 'https://opmgeoserver.gem.spc.int/geoserver/spc/wms',
+   //   layer: 'spc:SPC_Memberstates_v1',
+   // },
     enable_eez: true,
-    enable_coastline: true
+    enable_coastline: true,
+    enable_citynames: false
   },
   reducers: {
     setCenter(state, action) {
@@ -44,6 +53,12 @@ const mapSlice = createSlice({
     setCoastlineEnable(state, action) {
       state.enable_coastline = action.payload; // Add new layer to state
     },
+    setCityNameLayer(state, action) {
+      state.citynamesoverlay = action.payload; // Add new layer to state
+    },
+    setCityNameEnable(state, action) {
+      state.enable_citynames = action.payload; // Add new layer to state
+    },
     setEEZEnable(state, action) {
       state.enable_eez = action.payload; // Add new layer to state
     },
@@ -63,5 +78,5 @@ const mapSlice = createSlice({
   },
 });
 
-export const { setCenter, setZoom, setBounds, addMapLayer, removeMapLayer,updateMapLayer,setBaseMapLayer,setOverlayLayer,setEEZEnable,setCoastlineLayer,setCoastlineEnable } = mapSlice.actions;
+export const { setCenter, setZoom, setBounds, addMapLayer, removeMapLayer,updateMapLayer,setBaseMapLayer,setOverlayLayer,setEEZEnable,setCoastlineLayer,setCoastlineEnable,setCityNameLayer,setCityNameEnable } = mapSlice.actions;
 export default mapSlice.reducer;
