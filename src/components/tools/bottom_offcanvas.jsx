@@ -10,6 +10,8 @@ import dynamic from 'next/dynamic';
 import 'chart.js/auto';
 import Timeseries from './timeseries'; 
 import Tabular from './tablular'; 
+import DynamicImage from './getMap'; // Import the new DynamicImage component
+
 
 function BottomOffCanvas({ isVisible }) {
 
@@ -156,8 +158,7 @@ function BottomOffCanvas({ isVisible }) {
 
   <Tab eventKey="tab2" title="Get Map">
     <div>
-      <h5>Content for Tab 2</h5>
-      <p>This is the content inside the second tab.</p>
+    <DynamicImage height={height - 100} />
     </div>
   </Tab>
   <Tab eventKey="tab3" title="Download ">

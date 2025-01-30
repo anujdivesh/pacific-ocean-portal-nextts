@@ -19,19 +19,24 @@ import '@/components/css/map.css'
 // icon 
 import { IoMdPerson } from "react-icons/io";
 import { Row, Col } from 'react-bootstrap';
+import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
+import { showoffCanvas, hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
 
 function Navigationbar({topContent,mainContent}) {
     const pathname = usePathname();
     const isLoggedin = false;
-
+    const dispatch = useAppDispatch();
     useEffect(() => {
 
         if (pathname === '/') {
             document.body.classList.remove('no-sidebar', 'navt2');
             document.body.classList.add('navt');
+            dispatch(hideoffCanvas())
+            
         } else {
             document.body.classList.add('no-sidebar', 'navt2');
             document.body.classList.remove('navt');
+            dispatch(hideoffCanvas())
         }
         /*if (pathname === '/aboutus' || pathname === '/login') {
             document.body.classList.add('no-sidebar', 'navt2');

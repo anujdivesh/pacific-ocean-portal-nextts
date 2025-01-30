@@ -3,6 +3,11 @@
     border-radius: 0; /* Removes the rounded corners */
   }
   
+
+  .custom-header2 {
+    background-color: #3f51b5; /* Example background color */
+    color: white;
+  }
   .custom-modal .modal-header,
   .custom-modal .modal-body,
   .custom-modal .modal-footer {
