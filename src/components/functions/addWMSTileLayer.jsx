@@ -1,5 +1,7 @@
 import L from 'leaflet';
 import $ from 'jquery';
+
+
 /**
  * Adds a WMS tile layer to a Leaflet map.
  *
@@ -10,8 +12,13 @@ import $ from 'jquery';
  * @param {string} [options.format='image/png'] - The format of the image requested from the WMS service.
  * @param {boolean} [options.transparent=true] - Whether the WMS layer is transparent.
  * @param {Object} [options.params] - Additional parameters to include in the WMS request.
+ * @param {function} handleShow 
  */
-const addWMSTileLayer = (map, url, options = {}) => {
+
+
+
+const addWMSTileLayer = (map, url, options = {}, handleShow) => {
+
     // Set default options
     const defaultOptions = {
         layers: '',
@@ -122,7 +129,7 @@ const addWMSTileLayer = (map, url, options = {}) => {
             }
         });
     };
-
+/*
     // Function to show the feature info in a popup
     const showFeatureInfoPopup = (content, latlng, map) => {
         const el = document.createElement('html');
@@ -136,14 +143,60 @@ const addWMSTileLayer = (map, url, options = {}) => {
         }
 
         // Create the popup content
-        const popupContent = `<p>${featureInfo}</p><p>Timeseries View</p>`;
+        //const popupContent = `<p>${featureInfo}</p><p>Timeseries View</p>`;
+
+        /*const popupContent = `
+  <p>${featureInfo}</p>
+  <p>Timeseries View</p>
+  <a href="javascript:void(0);" onclick="handleShow()">Open Timeseries</a>
+`;
+
+const popupContent = `
+<p>${featureInfo}</p>
+<p>Timeseries View</p>
+<a href="javascript:void(0);" onclick="handleShow">Open Timeseries</a>
+`;
 
         // Show the popup
         L.popup({ maxWidth: 800 })
             .setLatLng(latlng)
             .setContent(popupContent)
             .openOn(map);
-    };
+    };*/
+
+    // Function to show the feature info in a popup
+const showFeatureInfoPopup = (content, latlng, map) => {
+    const el = document.createElement('html');
+    el.innerHTML = content;
+
+    // Example: assuming the feature info is in a table and extracting the text
+    const p = el.getElementsByTagName('td');
+    let featureInfo = "No Data";
+    if (p.length > 5) {
+        featureInfo = p[5] ? p[5].textContent.trim() : "No Data";
+    }
+
+    // Create popup content with a dynamic click handler for 'handleShow'
+    const popupContent = `
+    <p>Value: ${featureInfo}</p>
+    <a href="javascript:void(0);" class="open-timeseries-link" style="display: block; margin-top: -10;">GetTimeseries</a>
+`;
+
+
+    // Show the popup
+    const popup = L.popup({ maxWidth: 800 })
+        .setLatLng(latlng)
+        .setContent(popupContent)
+        .openOn(map);
+
+    // Attach event listener to the link inside the popup
+    const link = popup._contentNode.querySelector('.open-timeseries-link');
+    if (link) {
+        link.addEventListener('click', () => {
+            handleShow(); // This will now trigger the handleShow function
+        });
+    }
+};
 
     return wmsLayer; // Return the layer instance
 };

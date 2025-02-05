@@ -142,7 +142,7 @@ return(
     <div style={{marginTop:'-10px',marginBottom:12, marginLeft:5}}>
       <Row className="g-0">
       <Col md={4}>
-      <p style={{fontSize:13, paddingTop:8}}>Time Range:</p>
+      <p style={{fontSize:13, paddingTop:8,paddingLeft:10}}>Time Range:</p>
       </Col>
       <Col md={4}> 
       <input

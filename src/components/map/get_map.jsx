@@ -10,9 +10,12 @@ import addWMSTileLayer from '../functions/addWMSTileLayer';
 import "leaflet-bing-layer";
 import '@/components/css/legend.css';
 import { get_url } from '@/components/json/urls';
+import { showoffCanvas, hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
 
 const MapBox = () => {
     const mapRef = useRef();
+    const isVisible = useAppSelector((state) => state.offcanvas.isVisible);
+
     const dispatch = useAppDispatch();
     const { center, zoom, bounds, maxBounds, layers, basemap, eezoverlay,enable_eez,enable_coastline,coastlineoverlay,citynamesoverlay,enable_citynames } = useAppSelector((state) => state.mapbox);
     const isBing = useRef(false); 
@@ -27,6 +30,11 @@ const MapBox = () => {
     const legendColorRef = useRef();
     const [wmsLayerGroup, setWmsLayerGroup] = useState(null); 
     const [wmsLayer2Details, setWmsLayer2Details] = useState(null);
+;
+    
+    const handleShow = () => {
+        dispatch(showoffCanvas());
+    };
 
     
 
@@ -200,7 +208,7 @@ const MapBox = () => {
           numcolorbands: layer.layer_information.numcolorbands,
           time: layer.layer_information.timeIntervalEnd,
           logscale: layer.layer_information.logscale
-        });
+        },handleShow);
 
         layerGroup.addLayer(wmsLayer);
         
@@ -224,7 +232,7 @@ const MapBox = () => {
           logscale: layer.layer_information.logscale,
           //crs: L.CRS84,  // Define CRS as EPSG:4326
           //bbox: bbox,
-        });
+        },handleShow);
         layerGroup.addLayer(wmsLayer);
 
         const wmsLayer2 = addWMSTileLayer(mapRef.current, layer.layer_information.url, {
@@ -237,7 +245,7 @@ const MapBox = () => {
           logscale: layer.layer_information.logscale,
           //crs: L.CRS84,  // Define CRS as EPSG:4326
           //bbox: bbox,
-        });
+        },handleShow);
 
         // Add the second layer of the composite
         layerGroup.addLayer(wmsLayer2);
@@ -255,7 +263,7 @@ const MapBox = () => {
           numcolorbands: layer.layer_information.numcolorbands,
           time: layer.layer_information.timeIntervalEnd,
           logscale: layer.layer_information.logscale,
-        });
+        },handleShow);
         layerGroup.addLayer(wmsLayer);
       }
      

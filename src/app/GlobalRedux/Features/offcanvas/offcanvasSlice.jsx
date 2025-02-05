@@ -8,7 +8,7 @@ const offcanvasSlice = createSlice({
   },
   reducers: {
     showoffCanvas: (state) => {
-      state.isVisible = !state.isVisible;;
+      state.isVisible = true;;
     },
     hideoffCanvas: (state) => {
       state.isVisible = false;
