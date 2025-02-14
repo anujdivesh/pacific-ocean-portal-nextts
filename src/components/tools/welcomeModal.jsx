@@ -15,7 +15,7 @@ const WelcomeModal = () => {
       setTimesShown(count);
 
       // Show the modal only if it has been shown less than 500 times
-      if (count < 500) {
+      if (count < 5) {
         setShow(true); // Show the modal if count is less than 500
       } else {
         console.log('Modal count reached 500, not showing modal');
@@ -34,7 +34,7 @@ const WelcomeModal = () => {
     localStorage.setItem('modalShownCount', newCount.toString());
 
     // If the count reaches 500, stop showing the modal
-    if (newCount >= 500) {
+    if (newCount >= 5) {
       console.log('Modal count reached 500, stopping modal display');
       setShow(false); // Hide modal after 500
     } else {

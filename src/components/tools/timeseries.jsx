@@ -1,134 +1,232 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import 'chart.js/auto'; // Import Chart.js
+import { useAppSelector } from '@/app/GlobalRedux/hooks';
 
+// Importing dynamic line chart component
 const Line = dynamic(() => import('react-chartjs-2').then((mod) => mod.Line), {
   ssr: false,
 });
 
+// Random color generator function
+const getRandomColor = () => {
+  const r = Math.floor(Math.random() * 256); // Red
+  const g = Math.floor(Math.random() * 256); // Green
+  const b = Math.floor(Math.random() * 256); // Blue
+  return `rgb(${r}, ${g}, ${b}, 0.8)`;
+};
+
 function Timeseries({ height }) {
+  const mapLayer = useAppSelector((state) => state.mapbox.layers);
+  const lastlayer = useRef(0);
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [],
-  }); // Initialize chartData with empty arrays
-  const [selectedDatasets, setSelectedDatasets] = useState({
-    waveHeight: true,  // Wave height is checked by default
-    peakPeriod: false, // Peak period is unchecked by default
   });
 
+  const [selectedDatasets, setSelectedDatasets] = useState({});
+  const [datasetsConfig, setDatasetsConfig] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);  // Loading state
+
+  const { x, y, sizex, sizey, bbox } = useAppSelector((state) => state.coordinate.coordinates);
+  const [enabledChart, setEnabledChart] = useState(false);
+
+  // Check if coordinates are valid (not null)
+  const isCoordinatesValid = x !== null && y !== null && sizex !== null && sizey !== null && bbox !== null;
+
   // General fetch function for data
-  const fetchData = async (layer, label, setDataFn) => {
+  const fetchData = async (time, url, layer, label, setDataFn) => {
     try {
-      const res = await fetch(`https://dev-oceanportal.spc.int/thredds/wms/POP/model/regional/bom/forecast/hourly/wavewatch3/latest.nc?REQUEST=GetTimeseries&LAYERS=${layer}&QUERY_LAYERS=${layer}&BBOX=-25.3944,-149.76,334.6056,138.24&SRS=CRS:84&FEATURE_COUNT=5&HEIGHT=600&WIDTH=750&X=535&Y=353&STYLES=default/default&VERSION=1.1.1&TIME=2025-01-30T00:00:00.000Z/2025-02-06T00:00:00.000Z&INFO_FORMAT=text/json`);
+      setIsLoading(true); // Set loading to true when fetching data
+      const urlWithParams = url
+        .replace('${layer}', layer)
+        .replace('${layer2}', layer)
+        .replace('${x}', x)
+        .replace('${y}', y)
+        .replace('${bbox}', bbox)
+        .replace('${sizex}', sizex)
+        .replace('${time}', time)
+        .replace('${sizey}', sizey);
+
+      const res = await fetch(urlWithParams);
       const data = await res.json();
 
       const times = data.domain.axes.t.values;
       const values = data.ranges[layer].values;
 
-      // Format times as strings for the chart labels
       const formattedTimes = times.map((time) => {
         const date = new Date(time);
         return `${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2, '0')}`;
       });
 
-      // Call the state update function with the new data
       setDataFn(formattedTimes, values, label);
     } catch (error) {
       console.error(`Error fetching ${label} data:`, error);
+    } finally {
+      setIsLoading(false); // Set loading to false once fetching is done
     }
   };
 
-  // Set the chart data dynamically
   const setChartDataFn = (times, values, label) => {
     setChartData((prevData) => {
+      var color = getRandomColor();
       const newDataset = {
         label,
         data: values,
-        borderColor: label === 'Significant Wave Height (m)' ? 'rgba(75, 192, 192, 1)' : 'rgba(153, 102, 255, 1)',
-        backgroundColor: label === 'Significant Wave Height (m)' ? 'rgba(75, 192, 192, 0.2)' : 'rgba(153, 102, 255, 0.2)',
-        fill: label === 'Significant Wave Height (m)',
-        borderDash: label === 'Peak Wave Period (s)' ? [5, 5] : [],
+        borderColor: color,
+        backgroundColor: color,
+        fill: false,
       };
 
-      // Add or update the datasets based on the checkbox state
       return {
         labels: times,
-        datasets: prevData.datasets.filter(d => d.label !== label).concat(newDataset), // Ensure no duplicates
+        datasets: prevData.datasets.filter((d) => d.label !== label).concat(newDataset),
       };
     });
   };
 
-  // Fetch initial Wave Height data
+  // Effect to handle coordinate updates and API requests only when valid coordinates are present
   useEffect(() => {
-    if (selectedDatasets.waveHeight) {
-      fetchData('sig_wav_ht', 'Significant Wave Height (m)', setChartDataFn);
-    } else {
-      // Remove Wave Height data from the chart when unchecked
-      setChartData((prevData) => ({
-        ...prevData,
-        datasets: prevData.datasets.filter((dataset) => dataset.label !== 'Significant Wave Height (m)'),
-      }));
-    }
-  }, [selectedDatasets.waveHeight]);
+    if (isCoordinatesValid) {
+      if (mapLayer.length > 0) {
+        lastlayer.current = mapLayer.length - 1;
+        const layerInformation = mapLayer[lastlayer.current]?.layer_information;
 
-  // Fetch Peak Period data if checked
+        if (layerInformation) {
+          const { timeseries_variables, timeseries_variable_label, timeseries_url, timeIntervalStart, timeIntervalEnd,enable_chart_timeseries,url } = layerInformation;
+
+          const variables = timeseries_variables.split(',');
+          const labels = timeseries_variable_label.split(',');
+          const query_url = timeseries_url;
+          const time_range = timeIntervalStart + "/" + timeIntervalEnd;
+          const enable_chart = enable_chart_timeseries;
+          setEnabledChart(enable_chart)
+
+          const newDatasetsConfig = variables.map((variable, index) => ({
+            key: variable,
+            label: labels[index],
+            layer: variable,
+            query_url: url+"?"+query_url,
+            timerange: time_range
+          }));
+
+          setDatasetsConfig(newDatasetsConfig);
+
+          const newSelectedDatasets = variables.reduce((acc, variable, index) => {
+            acc[variable] = index === 0;
+            return acc;
+          }, {});
+
+          setSelectedDatasets(newSelectedDatasets);
+        }
+      }
+    }
+  }, [mapLayer, isCoordinatesValid, enabledChart]); // Trigger when coordinates or mapLayer changes
+
+  // Effect to fetch data based on selected datasets only if coordinates are valid
   useEffect(() => {
-    if (selectedDatasets.peakPeriod) {
-      fetchData('pk_wav_per', 'Peak Wave Period (s)', setChartDataFn);
-    } else {
-      // Remove Peak Period data from the chart when unchecked
-      setChartData((prevData) => ({
-        ...prevData,
-        datasets: prevData.datasets.filter((dataset) => dataset.label !== 'Peak Wave Period (s)'),
-      }));
-    }
-  }, [selectedDatasets.peakPeriod]);
+    if (isCoordinatesValid) {
+      const selectedDatasetKeys = Object.keys(selectedDatasets);
+      const anySelected = selectedDatasetKeys.some((key) => selectedDatasets[key]);
 
-  // Handle checkbox changes
-  const handleCheckboxChange = (dataset) => {
-    setSelectedDatasets((prevState) => {
-      const newState = { ...prevState, [dataset]: !prevState[dataset] };
-      return newState;
-    });
+      if (!anySelected) {
+        setChartData({
+          labels: [],
+          datasets: [],
+        });
+      } else {
+        datasetsConfig.forEach((dataset) => {
+          if (selectedDatasets[dataset.key]) {
+            fetchData(dataset.timerange, dataset.query_url, dataset.layer, dataset.label, setChartDataFn);
+          } else {
+            setChartData((prevData) => ({
+              ...prevData,
+              datasets: prevData.datasets.filter((d) => d.label !== dataset.label),
+            }));
+          }
+        });
+      }
+    }
+  }, [selectedDatasets, datasetsConfig, x, y, isCoordinatesValid]); // Add coordinates check to dependencies
+
+  const handleCheckboxChange = (datasetKey) => {
+    setSelectedDatasets((prevState) => ({
+      ...prevState,
+      [datasetKey]: !prevState[datasetKey],
+    }));
   };
 
-  if (!chartData.labels.length) {
-    return <div>Loading...</div>;
+  // Early return if coordinates are invalid
+  if (!isCoordinatesValid) {
+    return (
+      <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
+        <p style={{ fontSize: 16, color: '#333' }}>
+          Click on map to view the timeseries
+        </p>
+      </div>
+    );
+  }
+
+  if (!enabledChart) {
+    return (
+      <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
+        <p style={{ fontSize: 16, color: '#333' }}>
+          This Feature is disabled by admin.
+        </p>
+      </div>
+    );
+  }
+
+  // Spinner style (you can customize this)
+  const spinnerStyle = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: `${height}px`,
+    fontSize: '20px',
+    color: '#007bff',
+    fontWeight: 'bold',
+  };
+
+  // Render chart if coordinates are valid and data is present
+  if (chartData.datasets.length === 0 && isLoading) {
+    return (
+      <div style={spinnerStyle}>
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div style={{ display: 'flex', height: `${height}px` }}>
-      {/* Checkbox List */}
       <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
-        <label style={{ fontSize: '13px', marginBottom: '0px' }}>
-          <input
-            type="checkbox"
-            checked={selectedDatasets.waveHeight}
-            onChange={() => handleCheckboxChange('waveHeight')}
-            style={{ marginRight: '5px' }}
-          />
-          Wave Height
-        </label>
-        <label style={{ fontSize: '13px', marginBottom: '0px' }}>
-          <input
-            type="checkbox"
-            checked={selectedDatasets.peakPeriod}
-            onChange={() => handleCheckboxChange('peakPeriod')}
-            style={{ marginRight: '5px' }}
-          />
-          Peak Period
-        </label>
+        <p style={{ fontSize: 12 }}>
+          DS: {mapLayer[lastlayer.current]?.layer_information?.layer_title}
+        </p>
+        {datasetsConfig.map((dataset) => (
+          <label key={dataset.key} style={{ fontSize: '13px', marginBottom: '0px' }}>
+            <input
+              type="checkbox"
+              checked={selectedDatasets[dataset.key]}
+              onChange={() => handleCheckboxChange(dataset.key)}
+              style={{ marginRight: '5px' }}
+            />
+            {dataset.label}
+          </label>
+        ))}
       </div>
 
-      {/* Vertical Divider */}
-      <div style={{
-        width: '1px',
-        backgroundColor: '#ccc', // Light gray color for the divider
-        margin: '0 20px', // Adds space between the checkbox and the chart
-      }}></div>
+      <div
+        style={{
+          width: '1px',
+          backgroundColor: '#ccc',
+          margin: '0 20px',
+        }}
+      ></div>
 
-      {/* Line Chart */}
       <div style={{ flex: 1, position: 'relative' }}>
         <Line
           data={chartData}

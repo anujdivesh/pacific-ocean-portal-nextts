@@ -8,6 +8,7 @@ import mapReducer from '@/app/GlobalRedux/Features/map/mapSlice'
 import offcanvasReducer from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice'
 import sideoffcanvasReducer from '@/app/GlobalRedux/Features/sideoffcanvas/sideoffcanvasSlice';
 import countryReducer from '@/app/GlobalRedux/Features/country/countrySlice';
+import coordinateReducer from '@/app/GlobalRedux/Features/coordinate/mapSlice'
 
 export const store = configureStore({
     reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
         mapbox: mapReducer,
         offcanvas:offcanvasReducer,
         sideoffcanvas:sideoffcanvasReducer,
-        country:countryReducer
+        country:countryReducer,
+        coordinate:coordinateReducer
     }
 })
 

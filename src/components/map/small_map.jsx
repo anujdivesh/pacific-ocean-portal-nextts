@@ -76,7 +76,6 @@ const SmallMap = ({currentDataset}) => {
   .then(response => response.json())
   .then(data => {
     //console.log(dataset_list)
-    //console.log(data)
 
           const jsonWithParent = {
             id:dataset_list.id,
@@ -102,7 +101,7 @@ const SmallMap = ({currentDataset}) => {
         center: [-8, 179.3053],
        });
      
-       const baselayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+       const baselayer = L.tileLayer('https://opmmiddleware.gem.spc.int/tile/{z}/{x}/{y}.png', {
         attribution: '&copy; Pacific Community (OSM)',
         detectRetina: true
     }).addTo(mapContainer2.current);
@@ -131,6 +130,7 @@ const SmallMap = ({currentDataset}) => {
             }
             }
             if (!boolCheck.current){
+             // console.log(currentDataset)
               fetchData(currentDataset,currentDataset.layer_information);
               dispatch(hideModal())
            //   console.log(current_datatset.current.layer_information)

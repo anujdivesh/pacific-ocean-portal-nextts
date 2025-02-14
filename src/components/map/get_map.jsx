@@ -12,6 +12,8 @@ import '@/components/css/legend.css';
 import { get_url } from '@/components/json/urls';
 import { showoffCanvas, hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
 
+import { setCoordinates  } from '@/app/GlobalRedux/Features/coordinate/mapSlice';
+
 const MapBox = () => {
     const mapRef = useRef();
     const isVisible = useAppSelector((state) => state.offcanvas.isVisible);
@@ -228,7 +230,7 @@ const MapBox = () => {
           abovemaxcolor: layer.layer_information.abovemaxcolor,
           belowmincolor: layer.layer_information.belowmincolor,
           numcolorbands: layer.layer_information.numcolorbands,
-          time: layer.layer_information.timeIntervalEnd,
+          time: layer.layer_information.timeIntervalStart,
           logscale: layer.layer_information.logscale,
           //crs: L.CRS84,  // Define CRS as EPSG:4326
           //bbox: bbox,
@@ -261,7 +263,7 @@ const MapBox = () => {
           abovemaxcolor: layer.layer_information.abovemaxcolor,
           belowmincolor: layer.layer_information.belowmincolor,
           numcolorbands: layer.layer_information.numcolorbands,
-          time: layer.layer_information.timeIntervalEnd,
+          time: layer.layer_information.timeIntervalStart,
           logscale: layer.layer_information.logscale,
         },handleShow);
         layerGroup.addLayer(wmsLayer);
@@ -349,11 +351,25 @@ const MapBox = () => {
         setWmsLayer3(null);
       }
     }*/
+      mapRef.current.on('click', (e) => {
+        const lat = e.latlng.lat;  // Get the latitude (y)
+        const lng = e.latlng.lng;  // Get the longitude (x)
+        var p1 = mapRef.current.latLngToContainerPoint(e.latlng);
+        var x = p1.x;
+        var y = p1.y;
+        var size = mapRef.current.getSize();
+        var sizex = size.x;
+        var sizey = size.y;
+        var bbox = mapRef.current.getBounds().toBBoxString();
+        // Dispatch these values to the Redux store
+        dispatch(setCoordinates({ x, y, sizex, sizey,bbox }));
+      });
+    
 
         return () => {
           mapRef.current.remove();
         };
-      }, [layers,basemap, bounds]);
+      }, [dispatch,layers,basemap, bounds]);
 
 
       useEffect(() => {
