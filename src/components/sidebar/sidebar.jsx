@@ -14,6 +14,8 @@ import { setAccordion } from '@/app/GlobalRedux/Features/accordion/accordionSlic
 import { showsideoffCanvas, hidesideoffCanvas  } from '@/app/GlobalRedux/Features/sideoffcanvas/sideoffcanvasSlice';
 import { setBounds  } from '@/app/GlobalRedux/Features/map/mapSlice';
 import SideOffCanvas from '../tools/side_offcanvas';
+import { showoffCanvas, hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
+
 const ExploreModal = dynamic(() => import('@/components/tools/model'), {ssr: false})
 
 const SideBar = () => {
@@ -32,7 +34,8 @@ const SideBar = () => {
     const handleShow = () => {
       dispatch(setAccordion(''))
       dispatch(setDataset([]))
-      dispatch(showModaler())
+      dispatch(showModaler());
+      dispatch(hideoffCanvas());
       //setShowModal(true)
     };
     const handleClose = () => {

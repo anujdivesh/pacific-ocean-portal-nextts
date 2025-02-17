@@ -50,7 +50,20 @@ function Timeseries({ height }) {
         .replace('${sizey}', sizey);
 
       const res = await fetch(urlWithParams);
-      const data = await res.json();
+
+      // Check if the response is ok and not empty
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      // Check if the response body is empty
+      const responseBody = await res.text();
+      if (!responseBody) {
+        throw new Error(`No data returned from the server.`);
+      }
+
+      // Parse the JSON response
+      const data = JSON.parse(responseBody);
 
       const times = data.domain.axes.t.values;
       const values = data.ranges[layer].values;
@@ -62,7 +75,11 @@ function Timeseries({ height }) {
 
       setDataFn(formattedTimes, values, label);
     } catch (error) {
-      console.error(`Error fetching ${label} data:`, error);
+      console.log(`Error fetching ${label} data:`, error); // Log error but don't throw it
+      setChartData({
+        labels: [],
+        datasets: [],
+      }); // Clear chart data and show "No Data" message
     } finally {
       setIsLoading(false); // Set loading to false once fetching is done
     }
@@ -76,7 +93,7 @@ function Timeseries({ height }) {
         data: values,
         borderColor: color,
         backgroundColor: color,
-        fill: false,
+        fill: true,
       };
 
       return {
@@ -94,21 +111,21 @@ function Timeseries({ height }) {
         const layerInformation = mapLayer[lastlayer.current]?.layer_information;
 
         if (layerInformation) {
-          const { timeseries_variables, timeseries_variable_label, timeseries_url, timeIntervalStart, timeIntervalEnd,enable_chart_timeseries,url } = layerInformation;
-
+          const { timeseries_variables, timeseries_variable_label, timeseries_url, timeIntervalStart, timeIntervalEnd, enable_chart_timeseries, url } = layerInformation;
+          if (enable_chart_timeseries){
           const variables = timeseries_variables.split(',');
           const labels = timeseries_variable_label.split(',');
           const query_url = timeseries_url;
           const time_range = timeIntervalStart + "/" + timeIntervalEnd;
           const enable_chart = enable_chart_timeseries;
-          setEnabledChart(enable_chart)
+          setEnabledChart(enable_chart);
 
           const newDatasetsConfig = variables.map((variable, index) => ({
             key: variable,
             label: labels[index],
             layer: variable,
-            query_url: url+"?"+query_url,
-            timerange: time_range
+            query_url: url + "?" + query_url,
+            timerange: time_range,
           }));
 
           setDatasetsConfig(newDatasetsConfig);
@@ -119,6 +136,7 @@ function Timeseries({ height }) {
           }, {});
 
           setSelectedDatasets(newSelectedDatasets);
+        }
         }
       }
     }
@@ -172,7 +190,7 @@ function Timeseries({ height }) {
     return (
       <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
         <p style={{ fontSize: 16, color: '#333' }}>
-          This Feature is disabled by admin.
+          This Feature is disabled.
         </p>
       </div>
     );
@@ -189,8 +207,17 @@ function Timeseries({ height }) {
     fontWeight: 'bold',
   };
 
-  // Render chart if coordinates are valid and data is present
-  if (chartData.datasets.length === 0 && isLoading) {
+  // Check if no data is available
+ /* if (chartData.datasets.length === 0 && !isLoading) {
+    return (
+      <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
+        <p style={{ fontSize: 16, color: '#333' }}>No data available</p>
+      </div>
+    );
+  }
+*/
+  // Show spinner when loading
+  if (isLoading) {
     return (
       <div style={spinnerStyle}>
         <div className="spinner-border" role="status">

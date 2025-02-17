@@ -32,7 +32,7 @@ function BottomOffCanvas({ isVisible }) {
   const dispatch = useAppDispatch();
 
   // State to manage offcanvas height and selected tab
-  const [height, setHeight] = useState(300); // initial height of 300px
+  const [height, setHeight] = useState(400); // initial height of 300px
   const [selectedTab, setSelectedTab] = useState('tab4'); // initially select the first tab
   const draggingRef = useRef(false);  // to track dragging state
   const startYRef = useRef(0);  // starting Y position for dragging
@@ -141,7 +141,10 @@ function BottomOffCanvas({ isVisible }) {
   id="offcanvas-tabs"
   className="mb-3 custom-tabs"
 >
-
+<Tab eventKey="tab4" title="Timeseries">
+  <Timeseries height={height - 100} data={data} /> {/* Subtracting space for header */}
+            
+</Tab>
   
   <Tab eventKey="tab1" title="Tabular">
     <div>
@@ -151,10 +154,7 @@ function BottomOffCanvas({ isVisible }) {
               />
     </div>
   </Tab>
-  <Tab eventKey="tab4" title="Timeseries">
-  <Timeseries height={height - 100} data={data} /> {/* Subtracting space for header */}
-            
-</Tab>
+
 
   <Tab eventKey="tab2" title="Get Map">
     <div>
@@ -162,12 +162,6 @@ function BottomOffCanvas({ isVisible }) {
     </div>
   </Tab>
   <Tab eventKey="tab3" title="Download ">
-    <div>
-      <h5>Content for Tab 3</h5>
-      <p>This is the content inside the third tab.</p>
-    </div>
-  </Tab>
-<Tab eventKey="tab5" title="Custom ">
     <div>
       <h5>Content for Tab 3</h5>
       <p>This is the content inside the third tab.</p>

@@ -10,40 +10,57 @@ function Tabular({ height }) {
   const [selectedDatasets, setSelectedDatasets] = useState({});
   const [datasetsConfig, setDatasetsConfig] = useState([]);
   const [loading, setLoading] = useState(false); // Loading state
-
+const [enabledTable, setEnabledTable] = useState(false);
   const { x, y, sizex, sizey, bbox } = useAppSelector((state) => state.coordinate.coordinates);
   const isCoordinatesValid = x !== null && y !== null && sizex !== null && sizey !== null && bbox !== null;
 
   // General fetch function for data
   const fetchData = async (time, url, layer, label, setDataFn) => {
+    setLoading(true); // Set loading to true before fetching
+    const urlWithParams = url
+      .replace('${layer}', layer)
+      .replace('${layer2}', layer)
+      .replace('${x}', x)
+      .replace('${y}', y)
+      .replace('${bbox}', bbox)
+      .replace('${sizex}', sizex)
+      .replace('${time}', time)
+      .replace('${sizey}', sizey);
+
     try {
-      setLoading(true); // Set loading to true before fetching
-      const urlWithParams = url
-        .replace('${layer}', layer)
-        .replace('${layer2}', layer)
-        .replace('${x}', x)
-        .replace('${y}', y)
-        .replace('${bbox}', bbox)
-        .replace('${sizex}', sizex)
-        .replace('${time}', time)
-        .replace('${sizey}', sizey);
-
       const res = await fetch(urlWithParams);
-      const data = await res.json();
 
-      const times = data.domain.axes.t.values;
-      const values = data.ranges[layer].values;
+      // Check if the response is not OK, log and return early without processing further
+      if (!res.ok) {
+        setDataFn([], [], label); // Handle the case where data is not available
+        return;
+      }
 
-      const formattedTimes = times.map((time) => {
-        const date = new Date(time);
-        const formattedDate = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
-        const formattedHour = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-        return { date: formattedDate, hour: formattedHour };
-      });
+      const responseText = await res.text();
+      try {
+        const data = JSON.parse(responseText); // Try parsing JSON only if the response is not empty
 
-      setDataFn(formattedTimes, values, label);
+        // Ensure the data is in the expected format before accessing it
+        if (data && data.domain && data.domain.axes && data.domain.axes.t && data.domain.axes.t.values) {
+          const times = data.domain.axes.t.values;
+          const values = data.ranges[layer]?.values || []; // In case there's no range data
+
+          const formattedTimes = times.map((time) => {
+            const date = new Date(time);
+            const formattedDate = `${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getDate()).padStart(2, '0')}`;
+            const formattedHour = `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+            return { date: formattedDate, hour: formattedHour };
+          });
+
+          setDataFn(formattedTimes, values, label);
+        } else {
+          setDataFn([], [], label); // No valid data, so clear the data
+        }
+      } catch (jsonError) {
+        setDataFn([], [], label); // If JSON parsing fails, clear the data
+      }
     } catch (error) {
-      console.error(`Error fetching ${label} data:`, error);
+      setDataFn([], [], label); // On error, ensure no data is set, prevents crash
     } finally {
       setLoading(false); // Set loading to false once fetching is done
     }
@@ -64,12 +81,13 @@ function Tabular({ height }) {
         const layerInformation = mapLayer[mapLayer.length - 1]?.layer_information;
 
         if (layerInformation) {
-          const { timeseries_variables, timeseries_variable_label, timeseries_url, timeIntervalStart, timeIntervalEnd, url } = layerInformation;
-
-          const variables = timeseries_variables.split(',');
-          const labels = timeseries_variable_label.split(',');
-          const query_url = timeseries_url;
+          const { table_variables,enable_chart_table, table_variable_label, table_url, timeIntervalStart, timeIntervalEnd, url } = layerInformation;
+          if(enable_chart_table){
+          const variables = table_variables.split(',');
+          const labels = table_variable_label.split(',');
+          const query_url = table_url;
           const time_range = timeIntervalStart + "/" + timeIntervalEnd;
+          setEnabledTable(enable_chart_table)
 
           const newDatasetsConfig = variables.map((variable, index) => ({
             key: variable,
@@ -87,6 +105,7 @@ function Tabular({ height }) {
           }, {});
 
           setSelectedDatasets(newSelectedDatasets);
+        }
         }
       }
     }
@@ -121,6 +140,24 @@ function Tabular({ height }) {
     );
   }
 
+  if (!enabledTable) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          minHeight: `${height}px`, // Ensures it takes up the full height available
+          justifyContent: 'center', // Centers horizontally
+          alignItems: 'center', // Centers vertically
+        }}
+      >
+        <p style={{ fontSize: 16, color: '#333' }}>
+          This Feature is disabled.
+        </p>
+      </div>
+    );
+  }
+  
+
   const spinnerStyle = {
     display: 'flex',
     justifyContent: 'center',
@@ -141,6 +178,15 @@ function Tabular({ height }) {
       </div>
     );
   }
+
+  // **Important**: Ensure no table renders if there's no data
+ /* if (data.length === 0) {
+    return (
+      <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
+        <p style={{ fontSize: 16, color: '#333' }}>No data available</p>
+      </div>
+    );
+  }*/
 
   return (
     <div style={{ display: 'flex', height: `${height}px` }}>
@@ -164,20 +210,20 @@ function Tabular({ height }) {
                 style={{
                   textAlign: 'center',
                   fontWeight: 'bold',
-                  backgroundColor: '#3f51b5', // Blue color for header
+                  backgroundColor: '#1769aa', // Blue color for header
                   color: 'white', // White font color
                   border: '1px solid #000', // Border for header cells
                 }}
               >
                 Parameter
               </th>
-              {data.length > 0 && data[0].times.map((time, idx) => (
+              {data[0]?.times?.map((time, idx) => (
                 <th
                   key={idx}
                   style={{
                     width: '100px',
                     textAlign: 'center',
-                    backgroundColor: '#3f51b5', // Blue color for header
+                    backgroundColor: '#1769aa', // Blue color for header
                     color: 'white', // White font color
                     border: '1px solid #000', // Border for header cells
                   }}
@@ -193,9 +239,9 @@ function Tabular({ height }) {
                 <td
                   style={{
                     fontWeight: 'bold',
-                    textAlign: 'center',
+                    textAlign: 'left',
                     padding: '5px 10px', // Added padding for left and right
-                    backgroundColor: '#3f51b5', // Blue color for cell
+                    backgroundColor: '#1769aa', // Blue color for cell
                     color: 'white', // White font color
                     border: '1px solid #000', // Border for cells
                     whiteSpace: 'nowrap', // Prevent text from wrapping
