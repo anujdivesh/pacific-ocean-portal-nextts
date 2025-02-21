@@ -55,7 +55,7 @@ function RangeSlider({item}) { // Default value for the slider
         if (sliderRef.current) {
           let newValue = parseInt(sliderRef.current.value, 10) + period;// Increment by the period
   
-          console.log(endDate)
+         // console.log(endDate)
           if (newValue > endDate.getTime()) {
             newValue = endDate.getTime(); // Cap to maxTimestamp
             clearInterval(id); // Stop the interval

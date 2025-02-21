@@ -13,6 +13,8 @@
         return server+'/middleware/api/layer_web_map/'+id+'/?format=json';
       case 'theme':
         return server+'/middleware/api/theme/?format=json';
+      case 'getLegend':
+        return 'https://opmmiddleware.gem.spc.int/cgi-bin/getLegend.py?units=null&layer_map='+id+'&coral=False';
       default:
         return 'https://api.example.com/default';
     }

@@ -10,7 +10,7 @@ function MyAccordion({dataset}) {
 
     useEffect(() => {
         // This will run when the dataset changes
-        console.log("Dataset updated:", dataset);
+       // console.log("Dataset updated:", dataset);
       }, [dataset]); // The effect runs whenever `dataset` changes
     
    

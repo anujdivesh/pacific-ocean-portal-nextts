@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
 import { addMapLayer, removeMapLayer,updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
 import '@/components/css/input.css'
+import { get_url } from '@/components/json/urls';
 
 
 function ColorScale({item }) {
@@ -98,7 +99,7 @@ return(
       <div className="col-sm-4">
   <p style={{fontSize:13}}>Legend:</p> </div>
     <div className="col-sm-7">
-    <img src={item.layer_information.legend_url} alt="Description of image" style={{ width: '50px', height: 'auto' }} />
+    <img src={get_url('getLegend',item.layer_information.id)} alt="Description of image" style={{ width: '50px', height: '180px' }} />
       </div>
       </div>
       </>

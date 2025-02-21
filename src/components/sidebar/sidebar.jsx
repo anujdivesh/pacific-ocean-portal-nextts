@@ -77,6 +77,7 @@ const SideBar = () => {
   
     // Handle region selection
     const handleRegionChange = (e) => {
+      dispatch(hideoffCanvas());
       const regionId = e.target.value;
       setSelectedRegion(regionId);
       localStorage.setItem('selectedRegion', regionId);
@@ -94,12 +95,6 @@ const SideBar = () => {
             north: region.north_bound_latitude,
           })
         );
-        console.log({
-          west: region.west_bound_longitude,
-          east: region.east_bound_longitude,
-          south: region.south_bound_latitude,
-          north: region.north_bound_latitude,
-        })
       } else {
         dispatch(setBounds(null)); // Reset bounds if no valid region is selected
       }

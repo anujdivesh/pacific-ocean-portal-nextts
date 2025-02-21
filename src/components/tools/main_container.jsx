@@ -11,6 +11,11 @@ import WelcomeModal from './welcomeModal';
 
 export default function MainContainer() {
 
+  useEffect(() => {
+
+    localStorage.setItem('selectedRegion', 1);
+  }, []);
+
 return (
   <>
    <WelcomeModal />

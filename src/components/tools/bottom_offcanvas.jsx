@@ -141,7 +141,12 @@ function BottomOffCanvas({ isVisible }) {
   id="offcanvas-tabs"
   className="mb-3 custom-tabs"
 >
-<Tab eventKey="tab4" title="Timeseries">
+<Tab eventKey="tab4" title="Get Map">
+    <div>
+    <DynamicImage height={height - 100} />
+    </div>
+  </Tab>
+<Tab eventKey="tab2" title="Timeseries">
   <Timeseries height={height - 100} data={data} /> {/* Subtracting space for header */}
             
 </Tab>
@@ -156,11 +161,7 @@ function BottomOffCanvas({ isVisible }) {
   </Tab>
 
 
-  <Tab eventKey="tab2" title="Get Map">
-    <div>
-    <DynamicImage height={height - 100} />
-    </div>
-  </Tab>
+
   <Tab eventKey="tab3" title="Download ">
     <div>
       <h5>Content for Tab 3</h5>
