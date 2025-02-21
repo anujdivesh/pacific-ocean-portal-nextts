@@ -14,7 +14,7 @@ function SideOffCanvas({isVisible}) {
 
       const handleSaveWorkbench = () => {
        // const datasetIds = dataset_list.map((dataset) => dataset.id); 
-        console.log(dataset_list)
+      //  console.log(dataset_list)
         // Save workbench state to localStorage
        // localStorage.setItem('workbenchLayers', JSON.stringify(workbenchLayers));
         alert('Workbench layers saved!');

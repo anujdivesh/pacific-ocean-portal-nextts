@@ -42,7 +42,7 @@ function DynamicImage({ height }) {
         const result = generateDateArray(start_date, end_date, step);
 
         const dynamicImages = result.map((date) => 
-          `https://dev-oceanportal.spc.int/cgi-bin/getMap.py?region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}`
+          `https://opmmiddleware.gem.spc.int/cgi-bin/getMap.py?region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}`
         );
         
         setImages(dynamicImages); // Update the images array with the generated URLs
@@ -52,7 +52,7 @@ function DynamicImage({ height }) {
         const result_str = layerInformation.specific_timestemps;
         const result = result_str.split(",");
         const dynamicImages = result.map((date) => 
-          `https://dev-oceanportal.spc.int/cgi-bin/getMap.py?region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}Z`
+          `https://opmmiddleware.gem.spc.int/cgi-bin/getMap.py?region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}Z`
         );
         
         setImages(dynamicImages); // Update images with the specific timestamps
@@ -133,7 +133,7 @@ function DynamicImage({ height }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <button
             onClick={openModal}
-            className="btn btn-success" // Button to open the modal
+            className="btn btn-outline-success" // Button to open the modal
             style={{
               padding: '5px 15px',
               cursor: 'pointer',
@@ -144,13 +144,15 @@ function DynamicImage({ height }) {
           <a
             href={images[currentIndex]}  // Link to the image
             download={`image_${currentIndex}.png`} // Download filename
-            className="btn btn-warning" // Button to download the image
+            className="btn btn-outline-warning" // Button to download the image
             style={{
               padding: '5px 15px',
               cursor: 'pointer',
               textDecoration: 'none', // Remove default link styling
-              color: 'white',
+              color: 'darkorange',
             }}
+            onMouseOver={(e) => e.target.style.color = 'white'}  // Change color to white on hover
+            onMouseOut={(e) => e.target.style.color = 'darkorange'} 
           >
             Download
           </a>
@@ -218,7 +220,7 @@ function DynamicImage({ height }) {
         {/* Modal (Popup) */}
         <Modal show={showModal} onHide={closeModal} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>Image View</Modal.Title>
+          <Modal.Title>Preview</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <img
