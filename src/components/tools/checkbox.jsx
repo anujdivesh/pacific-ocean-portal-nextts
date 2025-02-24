@@ -28,7 +28,7 @@ return(
     type="checkbox"
     id={`checkbox-${item.id}`}
     label={item.label} // Custom label or use item.label
-    checked={checked}
+    checked={item.layer_information.enabled}
     onClick={(e) => e.currentTarget.blur()}
     onChange={(e) => handleCheckboxChange(e,item)}
     style={{ marginRight: '1px',borderRadius:0,cursor:'pointer'}}

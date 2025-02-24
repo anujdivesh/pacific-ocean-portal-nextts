@@ -30,6 +30,8 @@ const MapBox = () => {
     const [wmsLayer3, setWmsLayer3] = useState(null);
     const [showTime, setShowTime] = useState(false);
     const legendColorRef = useRef();
+    const legendColorRef2 = useRef();
+    const legendColorRef3 = useRef();
     const [wmsLayerGroup, setWmsLayerGroup] = useState(null); 
     const [wmsLayer2Details, setWmsLayer2Details] = useState(null);
 ;
@@ -57,8 +59,37 @@ const MapBox = () => {
           attribution: basemap.attribution,
         }).addTo(mapRef.current);
       }
+
+       //Legend Note
+      legendColorRef2.current = L.control({ position: "bottomleft", id:22 });
+      legendColorRef2.current.onAdd = function() {
+          var div = L.DomUtil.create("div", "legend");
+          div.innerHTML += "<img src='/oceanportal/north_arrow.png' alt='Legend' width='50px' height='60px'>";
+          div.style.backgroundColor = "transparent";
+          div.style.marginLeft = '-1px';
+          //
+         // div.style.width = '50px';
+          
+         return div;
+        };
+        legendColorRef2.current.addTo(mapRef.current);
+
+        //Legend Note
+      legendColorRef3.current = L.control({ position: "bottomright", id:23  });
+      legendColorRef3.current.onAdd = function() {
+          var div = L.DomUtil.create("div", "legend");
+          div.innerHTML += "<img src='/oceanportal/COSPPacMap.png' alt='Legend' width='150px' height='120px'>";
+          div.style.backgroundColor = "transparent";
+          div.style.marginBottom = '-35px';
+          div.style.marginRight = '-12px';
+          //
+         // div.style.width = '50px';
+          
+         return div;
+        };
+        legendColorRef3.current.addTo(mapRef.current);
       
-      legendColorRef.current = L.control({ position: "topright", id:22 });
+      legendColorRef.current = L.control({ position: "topright", id:24 });
       legendColorRef.current.onAdd = function() {
         // Create a div container for the legend
         var div = L.DomUtil.create("div", "legend");
@@ -243,7 +274,7 @@ const MapBox = () => {
           transparent: true,
           opacity: layer.layer_information.opacity,
           styles: stylname[1],
-          time: layer.layer_information.timeIntervalEnd,
+          time: layer.layer_information.timeIntervalStart,
           logscale: layer.layer_information.logscale,
           //crs: L.CRS84,  // Define CRS as EPSG:4326
           //bbox: bbox,

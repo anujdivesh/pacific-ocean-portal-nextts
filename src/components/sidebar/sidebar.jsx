@@ -15,6 +15,8 @@ import { showsideoffCanvas, hidesideoffCanvas  } from '@/app/GlobalRedux/Feature
 import { setBounds  } from '@/app/GlobalRedux/Features/map/mapSlice';
 import SideOffCanvas from '../tools/side_offcanvas';
 import { showoffCanvas, hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
+import { TfiMore } from "react-icons/tfi";
+import { MdAddCircleOutline } from "react-icons/md";
 
 const ExploreModal = dynamic(() => import('@/components/tools/model'), {ssr: false})
 
@@ -123,15 +125,24 @@ const SideBar = () => {
       </select>
         </Col>
         </Row>
+          <div className="d-flex justify-content-between" style={{paddingTop:'10px'}}>
+                                <Button
+                                    variant="btn btn-primary btn-sm rounded-pill"
+                                    style={{ padding: '8px', color: 'white', width: '58%' }}
+                                    onClick={handleShow}
+                                >
+                                    <MdAddCircleOutline size={20}/>&nbsp;Explore Map Data
+                                </Button>
+                                <Button
+                                    variant="btn btn-info btn-sm rounded-pill"
+                                    style={{ padding: '8px', color: 'white', width: '38%' }}
+                                    onClick={handleShowCanvas}
+                                >
+                                   More  <TfiMore size={18} />
+                                </Button>
+                            </div>
         
-      <Row style={{paddingTop:'10px'}}>
-        <Col md={7}>
-        <button type="button" className="btn btn-primary btn-sm rounded-pill w-100" style={{padding:'8px', marginLeft:'5px'}} onClick={handleShow}><IoIosAddCircleOutline size={20}/>&nbsp;Explore Map Data</button>
-        </Col>
-        <Col md={5} style={{marginRight:0}}>
-          <Button variant="btn btn-info btn-sm rounded-pill" className="w-100"  style={{padding:'8px',color:'white'}}  onClick={handleShowCanvas} ><IoInformationCircleOutline size={20} />Info</Button>
-        </Col>
-      </Row>
+
       <Row style={{paddingTop:10,marginRight:-10,marginLeft:-8}}>
         <MyWorkbench/>
       </Row>

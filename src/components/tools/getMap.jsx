@@ -10,6 +10,7 @@ function DynamicImage({ height }) {
   const [currentIndex, setCurrentIndex] = useState(0); // State to manage the current image index
   const [showModal, setShowModal] = useState(false); // State to manage modal visibility
   const [loading, setLoading] = useState(true); // State to manage loading spinner visibility
+  const [timestamps, setTimestamps] = useState([]); // State to hold timestamps for images
 
   const imgHeight = height || 200; // Set default height to 200px if height is not provided
 
@@ -27,16 +28,16 @@ function DynamicImage({ height }) {
 
     return dateArray;
   }
+
   const savedRegion = localStorage.getItem('selectedRegion');
 
   useEffect(() => {
     if (mapLayer.length > 0) {
-      
       const layerInformation = mapLayer[mapLayer.length - 1]?.layer_information;
       const period = layerInformation.period;
-      
+
       if (period === "PT6H" || period === "COMMA") {
-        const start_date = layerInformation.timeIntervalStart;
+        const start_date = layerInformation.timeIntervalStartOriginal;
         const end_date = layerInformation.timeIntervalEnd;
         const step = period === "PT6H" ? layerInformation.interval_step : 24; // Use interval step for PT6H or 24 for COMMA
         const result = generateDateArray(start_date, end_date, step);
@@ -44,8 +45,9 @@ function DynamicImage({ height }) {
         const dynamicImages = result.map((date) => 
           `https://opmmiddleware.gem.spc.int/cgi-bin/getMap.py?region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}`
         );
-        
+
         setImages(dynamicImages); // Update the images array with the generated URLs
+        setTimestamps(result); // Set the timestamps based on the generated dates
       }
       else if (period === "OPENDAP") {
         // If specific timestamps are provided
@@ -54,11 +56,12 @@ function DynamicImage({ height }) {
         const dynamicImages = result.map((date) => 
           `https://opmmiddleware.gem.spc.int/cgi-bin/getMap.py?region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}Z`
         );
-        
+
         setImages(dynamicImages); // Update images with the specific timestamps
+        setTimestamps(result); // Set the specific timestamps
       }
     }
-  }, [mapLayer,savedRegion]);
+  }, [mapLayer, savedRegion]);
 
   // Functions to navigate between images
   const goToNext = () => {
@@ -128,6 +131,18 @@ function DynamicImage({ height }) {
             Next <FaChevronRight style={{ marginLeft: '8px' }} />
           </button>
         </div>
+
+        {/* Timestamp */}
+        {timestamps.length > 0 && (
+          <div style={{
+            marginTop: '10px',
+            textAlign: 'center',
+            fontSize: '14px',
+            color: '#555',
+          }}>
+            {new Date(timestamps[currentIndex]).toISOString()}
+          </div>
+        )}
 
         {/* Second Row of Buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -217,8 +232,9 @@ function DynamicImage({ height }) {
           ))}
         </div>
       </div>
-        {/* Modal (Popup) */}
-        <Modal show={showModal} onHide={closeModal} size="lg">
+
+      {/* Modal (Popup) */}
+      <Modal show={showModal} onHide={closeModal} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Preview</Modal.Title>
         </Modal.Header>

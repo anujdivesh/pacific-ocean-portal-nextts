@@ -44,7 +44,12 @@ function ButtonGroupComp({item}) {
         dispatch(removeMapLayer({ id: item.id }));
     };
     const handleShow = () => {
+      if (isVisible == true){
+ dispatch(hideoffCanvas());
+      }
+      else{
         dispatch(showoffCanvas())
+      }
       };
 
       const handleUpdateLayer = (id, updates) => {

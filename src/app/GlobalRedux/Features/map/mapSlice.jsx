@@ -69,6 +69,9 @@ const mapSlice = createSlice({
     removeMapLayer(state, action) {
         state.layers = state.layers.filter(layer => layer.id !== action.payload.id); // Remove layer by id
     },
+    removeAllMapLayer: (state) => {
+      state.layers = []; // Clears all layers
+    },
     updateMapLayer(state, action) {
       const { id, updates } = action.payload;
       const index = state.layers.findIndex(layer => layer.id === id);
@@ -79,5 +82,5 @@ const mapSlice = createSlice({
   },
 });
 
-export const { setCenter, setZoom, setBounds, addMapLayer, removeMapLayer,updateMapLayer,setBaseMapLayer,setOverlayLayer,setEEZEnable,setCoastlineLayer,setCoastlineEnable,setCityNameLayer,setCityNameEnable } = mapSlice.actions;
+export const { setCenter, setZoom, setBounds, addMapLayer, removeMapLayer,updateMapLayer,setBaseMapLayer,setOverlayLayer,setEEZEnable,setCoastlineLayer,setCoastlineEnable,setCityNameLayer,setCityNameEnable,removeAllMapLayer } = mapSlice.actions;
 export default mapSlice.reducer;

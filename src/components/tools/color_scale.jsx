@@ -87,10 +87,10 @@ return(
     <p style={{marginTop:4, fontSize:13}}>Color Scale:</p> </div>
      <div className="col-sm-6">
      <div style={rowStyle}>
-        <div style={{ fontSize:12,flex:1,paddingTop:5}}>Min:</div>
+        <div style={{ fontSize:12,flex:1,paddingTop:5}}>Min</div>
         <div style={{ fontSize:12,flex:1, width:20,marginLeft:-15}}><input type="email" className="form-control form-control-sm rounded-pill" id="colFormLabelSm" style={{borderRadius:0}} placeholder="min" onChange={(e) => handleChangemin(e,item)} value={colormin == "-100" ? item.layer_information.colormin : colormin}/>
      </div>
-        <div style={{ fontSize:12,flex:1,paddingTop:5,paddingLeft:5}}>Max:</div>
+        <div style={{ fontSize:12,flex:1,paddingTop:5,paddingLeft:5}}>Max</div>
         <div style={{ fontSize:12,flex:1,width:20,marginLeft:-15}}> <input type="email" className="form-control form-control-sm rounded-pill" id="colFormLabelSm" style={{borderRadius:0}} placeholder="max" onChange={(e) => handleChangemax(e,item)} value={colormax == "-100" ? item.layer_information.colormax : colormax}/></div>
       </div>
      </div>

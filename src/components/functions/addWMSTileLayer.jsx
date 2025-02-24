@@ -178,8 +178,9 @@ const showFeatureInfoPopup = (content, latlng, map) => {
 
     // Create popup content with a dynamic click handler for 'handleShow'
     const popupContent = `
-    <p>Value: ${featureInfo}</p>
-    <a href="javascript:void(0);" class="open-timeseries-link" style="display: block; margin-top: -10;">GetTimeseries</a>
+    <p>Value: ${featureInfo}
+    <a href="javascript:void(0);" class="open-timeseries-link" style="display: block;">&nbsp;more...</a>
+    </p>
 `;
 
 

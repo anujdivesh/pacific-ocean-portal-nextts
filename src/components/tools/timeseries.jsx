@@ -3,18 +3,25 @@ import React, { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import 'chart.js/auto'; // Import Chart.js
 import { useAppSelector } from '@/app/GlobalRedux/hooks';
+import { Spinner } from 'react-bootstrap'; 
 
 // Importing dynamic line chart component
 const Line = dynamic(() => import('react-chartjs-2').then((mod) => mod.Line), {
   ssr: false,
 });
 
-// Random color generator function
-const getRandomColor = () => {
-  const r = Math.floor(Math.random() * 256); // Red
-  const g = Math.floor(Math.random() * 256); // Green
-  const b = Math.floor(Math.random() * 256); // Blue
-  return `rgb(${r}, ${g}, ${b}, 0.8)`;
+// Define an array of fixed colors for the datasets
+const fixedColors = [
+  'rgb(255, 99, 132)', // Red for the first dataset
+  'rgb(54, 162, 235)', // Blue for the second dataset
+  'rgb(255, 206, 86)', // Yellow for the third dataset
+  'rgb(75, 192, 192)', // Green for the fourth dataset
+  'rgb(153, 102, 255)', // Purple for the fifth dataset
+];
+
+// Function to get the color based on the index
+const getColorByIndex = (index) => {
+  return fixedColors[index] || 'rgb(169, 169, 169)'; // Default to grey if more than 5 datasets
 };
 
 function Timeseries({ height }) {
@@ -32,10 +39,8 @@ function Timeseries({ height }) {
   const { x, y, sizex, sizey, bbox } = useAppSelector((state) => state.coordinate.coordinates);
   const [enabledChart, setEnabledChart] = useState(false);
 
-  // Check if coordinates are valid (not null)
   const isCoordinatesValid = x !== null && y !== null && sizex !== null && sizey !== null && bbox !== null;
 
-  // General fetch function for data
   const fetchData = async (time, url, layer, label, setDataFn) => {
     try {
       setIsLoading(true); // Set loading to true when fetching data
@@ -51,20 +56,16 @@ function Timeseries({ height }) {
 
       const res = await fetch(urlWithParams);
 
-      // Check if the response is ok and not empty
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      // Check if the response body is empty
       const responseBody = await res.text();
       if (!responseBody) {
         throw new Error(`No data returned from the server.`);
       }
 
-      // Parse the JSON response
       const data = JSON.parse(responseBody);
-
       const times = data.domain.axes.t.values;
       const values = data.ranges[layer].values;
 
@@ -75,25 +76,25 @@ function Timeseries({ height }) {
 
       setDataFn(formattedTimes, values, label);
     } catch (error) {
-      console.log(`Error fetching ${label} data:`, error); // Log error but don't throw it
+      console.log(`Error fetching ${label} data:`, error);
       setChartData({
         labels: [],
         datasets: [],
       }); // Clear chart data and show "No Data" message
     } finally {
-      setIsLoading(false); // Set loading to false once fetching is done
+      setIsLoading(false);
     }
   };
 
-  const setChartDataFn = (times, values, label) => {
+  const setChartDataFn = (times, values, label, index) => {
     setChartData((prevData) => {
-      var color = getRandomColor();
+      const color = getColorByIndex(index); // Get color based on the index
       const newDataset = {
         label,
         data: values,
         borderColor: color,
         backgroundColor: color,
-        fill: true,
+        fill: false,
       };
 
       return {
@@ -103,7 +104,6 @@ function Timeseries({ height }) {
     });
   };
 
-  // Effect to handle coordinate updates and API requests only when valid coordinates are present
   useEffect(() => {
     if (isCoordinatesValid) {
       if (mapLayer.length > 0) {
@@ -111,12 +111,12 @@ function Timeseries({ height }) {
         const layerInformation = mapLayer[lastlayer.current]?.layer_information;
 
         if (layerInformation) {
-          const { timeseries_variables, timeseries_variable_label, timeseries_url, timeIntervalStart, timeIntervalEnd, enable_chart_timeseries, url } = layerInformation;
+          const { timeseries_variables, timeseries_variable_label, timeseries_url, timeIntervalStartOriginal, timeIntervalEnd, enable_chart_timeseries, url } = layerInformation;
           if (enable_chart_timeseries){
           const variables = timeseries_variables.split(',');
           const labels = timeseries_variable_label.split(',');
           const query_url = timeseries_url;
-          const time_range = timeIntervalStart + "/" + timeIntervalEnd;
+          const time_range = timeIntervalStartOriginal + "/" + timeIntervalEnd;
           const enable_chart = enable_chart_timeseries;
           setEnabledChart(enable_chart);
 
@@ -140,9 +140,8 @@ function Timeseries({ height }) {
         }
       }
     }
-  }, [mapLayer, isCoordinatesValid, enabledChart]); // Trigger when coordinates or mapLayer changes
+  }, [mapLayer, isCoordinatesValid, enabledChart]);
 
-  // Effect to fetch data based on selected datasets only if coordinates are valid
   useEffect(() => {
     if (isCoordinatesValid) {
       const selectedDatasetKeys = Object.keys(selectedDatasets);
@@ -154,9 +153,11 @@ function Timeseries({ height }) {
           datasets: [],
         });
       } else {
-        datasetsConfig.forEach((dataset) => {
+        datasetsConfig.forEach((dataset, index) => {
           if (selectedDatasets[dataset.key]) {
-            fetchData(dataset.timerange, dataset.query_url, dataset.layer, dataset.label, setChartDataFn);
+            fetchData(dataset.timerange, dataset.query_url, dataset.layer, dataset.label, (times, values, label) => {
+              setChartDataFn(times, values, label, index); // Pass index for color
+            });
           } else {
             setChartData((prevData) => ({
               ...prevData,
@@ -166,7 +167,7 @@ function Timeseries({ height }) {
         });
       }
     }
-  }, [selectedDatasets, datasetsConfig, x, y, isCoordinatesValid]); // Add coordinates check to dependencies
+  }, [selectedDatasets, datasetsConfig, x, y, isCoordinatesValid]);
 
   const handleCheckboxChange = (datasetKey) => {
     setSelectedDatasets((prevState) => ({
@@ -175,28 +176,40 @@ function Timeseries({ height }) {
     }));
   };
 
-  // Early return if coordinates are invalid
   if (!isCoordinatesValid) {
     return (
-      <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
-        <p style={{ fontSize: 16, color: '#333' }}>
-          Click on map to view the timeseries
-        </p>
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 2,
+        display: 'flex',
+        alignItems: 'center',
+      }}>
+      
+      <p style={{ fontSize: 16, color: '#333' }}>Click on map to retrieve data.</p>
       </div>
     );
   }
 
   if (!enabledChart) {
     return (
-      <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
-        <p style={{ fontSize: 16, color: '#333' }}>
-          This Feature is disabled.
-        </p>
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 2,
+        display: 'flex',
+        alignItems: 'center',
+      }}>
+      
+      <p style={{ fontSize: 16, color: '#333' }}> This Feature is disabled.</p>
       </div>
     );
   }
 
-  // Spinner style (you can customize this)
   const spinnerStyle = {
     display: 'flex',
     justifyContent: 'center',
@@ -207,22 +220,19 @@ function Timeseries({ height }) {
     fontWeight: 'bold',
   };
 
-  // Check if no data is available
- /* if (chartData.datasets.length === 0 && !isLoading) {
-    return (
-      <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
-        <p style={{ fontSize: 16, color: '#333' }}>No data available</p>
-      </div>
-    );
-  }
-*/
-  // Show spinner when loading
   if (isLoading) {
     return (
-      <div style={spinnerStyle}>
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 2,
+        display: 'flex',
+        alignItems: 'center',
+      }}>
+        <Spinner animation="border" role="status" variant="primary"/>
+                   <span style={{ marginLeft: '10px', fontSize: '18px' }}>Fetching data from api...</span>
       </div>
     );
   }

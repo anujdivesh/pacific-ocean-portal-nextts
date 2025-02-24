@@ -3,22 +3,48 @@ import Offcanvas from 'react-bootstrap/Offcanvas';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import { showsideoffCanvas, hidesideoffCanvas  } from '@/app/GlobalRedux/Features/sideoffcanvas/sideoffcanvasSlice';
 import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks';
+import { setCenter, setZoom, setBounds,addMapLayer, removeAllMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
 
 function SideOffCanvas({isVisible}) {
     const dispatch = useAppDispatch();
-    const dataset_list = useAppSelector(state => state.dataset_list.value)
+    const mapLayer = useAppSelector((state) => state.mapbox.layers);
+   
 
     const handleClose = () => {
         dispatch(hidesideoffCanvas())
       };
 
       const handleSaveWorkbench = () => {
-       // const datasetIds = dataset_list.map((dataset) => dataset.id); 
-      //  console.log(dataset_list)
-        // Save workbench state to localStorage
-       // localStorage.setItem('workbenchLayers', JSON.stringify(workbenchLayers));
-        alert('Workbench layers saved!');
-      };
+      //  console.log(mapLayer); // To verify the state
+
+        // Loop through mapLayer and update 'enabled' to false for all layers
+        const updatedMapLayer = mapLayer.map((layer) => {
+            if (layer.layer_information) {
+                return {
+                    ...layer,
+                    layer_information: {
+                        ...layer.layer_information,
+                        enabled: false,
+                    },
+                };
+            }
+            return layer;
+        });
+
+        // Save the updated mapLayer state to localStorage
+        localStorage.setItem('savedLayers', JSON.stringify(updatedMapLayer));
+
+        dispatch(hidesideoffCanvas())
+    };
+
+    const handleClearWorkbench = () => {
+      // Clear the saved layers from localStorage
+      localStorage.removeItem('savedLayers');
+dispatch(removeAllMapLayer())
+      // Show Toast after clearing
+        dispatch(hidesideoffCanvas())
+  };
+    
     
 return(
     <Offcanvas show={isVisible} onHide={handleClose} placement="end" className="offcanvas-end" backdrop={true} scroll={true}>
@@ -26,10 +52,25 @@ return(
       <Offcanvas.Title>Saving Workbench Layers</Offcanvas.Title>
     </Offcanvas.Header>
     <Offcanvas.Body>
-      To Save workbench layers click on the button below. This will allow the application to rememeber selected layers and it will be displayed when the application is initialized.
+    To save the workbench layers, simply use the option provided below. This will allow the application to remember your selected layers and display them when the application is launched.
+
      <br/><br/>
-      <Button variant="btn btn-primary btn-sm rounded-pill" className="w-100"  style={{padding:'8px',color:'white'}}  onClick={handleSaveWorkbench}>Save Workbench</Button>
-        
+     <div className="d-flex justify-content-between">
+                        <Button
+                            variant="btn btn-primary btn-sm rounded-pill"
+                            style={{ padding: '8px', color: 'white', width: '48%' }}
+                            onClick={handleSaveWorkbench}
+                        >
+                            Save Workbench
+                        </Button>
+                        <Button
+                            variant="btn btn-danger btn-sm rounded-pill"
+                            style={{ padding: '8px', color: 'white', width: '48%' }}
+                            onClick={handleClearWorkbench}
+                        >
+                            Clear Saved Layers
+                        </Button>
+                    </div>
     </Offcanvas.Body>
   </Offcanvas>
 )

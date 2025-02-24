@@ -75,7 +75,7 @@ const SmallMap = ({currentDataset}) => {
           await fetch(url)
   .then(response => response.json())
   .then(data => {
-    //console.log(dataset_list)
+    data.timeIntervalStartOriginal = data.timeIntervalStart;
 
           const jsonWithParent = {
             id:dataset_list.id,

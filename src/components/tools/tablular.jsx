@@ -81,12 +81,12 @@ const [enabledTable, setEnabledTable] = useState(false);
         const layerInformation = mapLayer[mapLayer.length - 1]?.layer_information;
 
         if (layerInformation) {
-          const { table_variables,enable_chart_table, table_variable_label, table_url, timeIntervalStart, timeIntervalEnd, url } = layerInformation;
+          const { table_variables,enable_chart_table, table_variable_label, table_url, timeIntervalStartOriginal, timeIntervalEnd, url } = layerInformation;
           if(enable_chart_table){
           const variables = table_variables.split(',');
           const labels = table_variable_label.split(',');
           const query_url = table_url;
-          const time_range = timeIntervalStart + "/" + timeIntervalEnd;
+          const time_range = timeIntervalStartOriginal + "/" + timeIntervalEnd;
           setEnabledTable(enable_chart_table)
 
           const newDatasetsConfig = variables.map((variable, index) => ({
@@ -134,26 +134,38 @@ const [enabledTable, setEnabledTable] = useState(false);
   // Early return if coordinates are invalid
   if (!isCoordinatesValid) {
     return (
-      <div style={{ display: 'flex', height: `${height}px`, justifyContent: 'center', alignItems: 'center' }}>
-        <p style={{ fontSize: 16, color: '#333' }}>Click on map to view the timeseries</p>
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 2,
+        display: 'flex',
+        alignItems: 'center',
+      }}>
+      
+      <p style={{ fontSize: 16, color: '#333' }}>Click on map to retrieve data.</p>
       </div>
+
     );
   }
 
   if (!enabledTable) {
     return (
-      <div
-        style={{
-          display: 'flex',
-          minHeight: `${height}px`, // Ensures it takes up the full height available
-          justifyContent: 'center', // Centers horizontally
-          alignItems: 'center', // Centers vertically
-        }}
-      >
-        <p style={{ fontSize: 16, color: '#333' }}>
-          This Feature is disabled.
-        </p>
+
+      <div style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 2,
+        display: 'flex',
+        alignItems: 'center',
+      }}>
+      
+      <p style={{ fontSize: 16, color: '#333' }}> This Feature is disabled.</p>
       </div>
+     
     );
   }
   
@@ -171,11 +183,18 @@ const [enabledTable, setEnabledTable] = useState(false);
   // Show spinner when loading
   if (loading) {
     return (
-      <div style={spinnerStyle}>
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
+      <div style={{
+             position: 'absolute',
+             top: '50%',
+             left: '50%',
+             transform: 'translate(-50%, -50%)',
+             zIndex: 2,
+             display: 'flex',
+             alignItems: 'center',
+           }}>
+             <Spinner animation="border" role="status" variant="primary"/>
+                        <span style={{ marginLeft: '10px', fontSize: '18px' }}>Fetching data from api...</span>
+           </div>
     );
   }
 
@@ -238,11 +257,11 @@ const [enabledTable, setEnabledTable] = useState(false);
               <tr key={dataset.key}>
                 <td
                   style={{
-                    fontWeight: 'bold',
+                    //fontWeight: 'bold',
                     textAlign: 'left',
                     padding: '5px 10px', // Added padding for left and right
-                    backgroundColor: '#1769aa', // Blue color for cell
-                    color: 'white', // White font color
+                    //backgroundColor: '#1769aa', // Blue color for cell
+                    //color: 'white', // White font color
                     border: '1px solid #000', // Border for cells
                     whiteSpace: 'nowrap', // Prevent text from wrapping
                     overflow: 'hidden', // Hide overflowing text
@@ -254,6 +273,7 @@ const [enabledTable, setEnabledTable] = useState(false);
                     checked={selectedDatasets[dataset.key]}
                     onChange={() => handleCheckboxChange(dataset.key)}
                   />
+                  &nbsp;&nbsp;
                   {dataset.label}
                 </td>
                 {data
