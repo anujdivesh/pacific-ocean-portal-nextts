@@ -81,7 +81,9 @@ const MyWorkbench = () => {
           <p style={{ fontSize: '12px', marginTop: '-10px' }}>DATA SETS ( {mapLayer.length} )</p>
           <hr style={{ marginTop: -10, marginRight: -10, marginLeft: -12 }} />
           {
-            mapLayer.map((item) => (
+            mapLayer.map((item) => {
+              if (item.layer_information.layer_type == "WMS") {
+                return (
               <Accordion key={item.id} defaultActiveKey={""} style={{ paddingBottom: 4 }}>
                 <Card eventkey={item.id} style={{ borderRadius: 0 }}>
                   <Card.Header onClick={(e) => e.currentTarget.blur()} disabled={true}>
@@ -105,7 +107,28 @@ const MyWorkbench = () => {
                   </Accordion.Collapse>
                 </Card>
               </Accordion>
-            ))
+               );
+              } else {
+                return (
+                  <Accordion key={item.id} defaultActiveKey={""} style={{ paddingBottom: 4 }}>
+                <Card eventkey={item.id} style={{ borderRadius: 0 }}>
+                  <Card.Header onClick={(e) => e.currentTarget.blur()} disabled={true}>
+                    <CheckBox item={item}/>
+                    <CustomToggle eventkey={item.id}> {item.layer_information.layer_title}</CustomToggle>
+                  </Card.Header>
+                  <Accordion.Collapse eventkey={item.id}>
+                    <Card.Body style={{ paddingLeft: 0, paddingRight: 0 }}>
+                      <ButtonGroupComp item={item} />
+                   
+                      <DateSelector item={item} period={'daily'} startDateStr={item.layer_information.timeIntervalStart} endDateStr={item.layer_information.timeIntervalEnd} />
+                      <BottomOffCanvas isVisible={isVisible} />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
+                );
+              }
+            })
           }
         </Col>
       )}

@@ -1,14 +1,14 @@
-
 "use client";
 import dynamic from 'next/dynamic';
-import '@/components/css/map.css'
-//const MainContainer = dynamic(() => import('@/components/tools/main_container'), {ssr: false})
+import '@/components/css/map.css';
 
-const MainContainer = dynamic(() => import('@/components/tools/main_container'));
+// Dynamically import MainContainer with SSR disabled
+const MainContainer = dynamic(() => import('@/components/tools/main_container'), {
+  ssr: false, // Ensure this component is only loaded on the client side
+});
+
 export default function Home() {
-
-  
   return (
-   <MainContainer/>
+    <MainContainer />
   );
 }

@@ -40,7 +40,71 @@ const MapBox = () => {
         dispatch(showoffCanvas());
     };
 
+    const blueIcon = new L.Icon({
+      iconUrl:  "/oceanportal/blue_marker.png", // URL for the blue marker icon
+      iconSize: [25, 41], // Size of the icon
+      iconAnchor: [12, 41], // Anchor point of the icon
+      popupAnchor: [1, -34], // Popup anchor
+      shadowUrl: '/oceanportal/shadow.png', // Shadow of the marker
+      shadowSize: [41, 41], // Size of the shadow
+    });
     
+    // Function to fetch GeoJSON and plot blue markers
+   // Function to fetch GeoJSON and plot blue markers
+const fetchAndPlotGeoJSON = async (url) => {
+  try {
+    const response = await fetch(url);
+    const geojsonData = await response.json();
+
+    // Plot the GeoJSON data with blue markers and popups
+    L.geoJSON(geojsonData, {
+      pointToLayer: function (feature, latlng) {
+        // Create a marker with a blue icon
+        const marker = L.marker(latlng, { icon: blueIcon });
+
+        // Check if the feature has a 'name' property for popup content (or any other property you need)
+        const popupContent = `
+          ${feature.properties.PORT_NAME || "No name provided"}
+        `;
+
+        // Add a popup to the marker
+        marker.bindPopup(popupContent);
+
+        // Attach a custom event handler to the popup's link
+        marker.on('popupopen', () => {
+          // When the popup opens, attach the event handler to the link
+          const link = document.querySelector('.popup-link');
+          if (link) {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              // Dispatch the action when the link is clicked
+            });
+          }
+        });
+
+        marker.on('click', () => {
+          console.log('hello')
+          // Log the 'PORT_NAME' property of the feature
+          var station = feature.properties.AAC;
+          var x = null;
+          var y = null;
+          var sizex = null;
+          var sizey = null;
+          var bbox = null;
+          
+          dispatch(setCoordinates({ x, y, sizex, sizey,bbox,station }));
+          dispatch(showoffCanvas());
+
+        });
+
+        return marker; // Return the marker with the popup attached
+      },
+    }).addTo(mapRef.current); // Assuming mapRef.current is your Leaflet map reference
+  } catch (error) {
+    console.error('Error fetching GeoJSON data:', error);
+  }
+};
+
 
 
       useEffect(() => {
@@ -212,6 +276,7 @@ const MapBox = () => {
     layers.forEach(layer => {
 
       if(layer.layer_information.enabled){
+        if(layer.layer_information.layer_type == "WMS"){
       
       if(!layer.layer_information.is_timeseries){
         /*
@@ -312,9 +377,17 @@ const MapBox = () => {
      }
     }
     }
+    else{
+      //PLOT marker here
+      var geojson_url =  layer.layer_information.url;
+      fetchAndPlotGeoJSON(geojson_url);
+    }
+  }
     });
 
    
+  
+    
 
       const  handleMoveEnd = () => {
       const newCenter = mapRef.current.getCenter();
@@ -392,8 +465,9 @@ const MapBox = () => {
         var sizex = size.x;
         var sizey = size.y;
         var bbox = mapRef.current.getBounds().toBBoxString();
+        var station = null;
         // Dispatch these values to the Redux store
-        dispatch(setCoordinates({ x, y, sizex, sizey,bbox }));
+        dispatch(setCoordinates({ x, y, sizex, sizey,bbox,station }));
       });
     
 

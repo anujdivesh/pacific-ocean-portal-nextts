@@ -17,6 +17,15 @@ import SideOffCanvas from '../tools/side_offcanvas';
 import { showoffCanvas, hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
 import { TfiMore } from "react-icons/tfi";
 import { MdAddCircleOutline } from "react-icons/md";
+import { CgDetailsMore } from "react-icons/cg";
+import { CiMenuFries } from "react-icons/ci";
+import { AiOutlineMenu } from "react-icons/ai";
+import { CgMenuRound } from "react-icons/cg";
+import { MdOutlineMenuOpen } from "react-icons/md";
+import { CgMenuLeft } from "react-icons/cg";
+import { RiMenuFold4Line } from "react-icons/ri";
+import { CgMenuGridO } from "react-icons/cg";
+import { BiFoodMenu } from "react-icons/bi";
 
 const ExploreModal = dynamic(() => import('@/components/tools/model'), {ssr: false})
 
@@ -138,7 +147,7 @@ const SideBar = () => {
                                     style={{ padding: '8px', color: 'white', width: '38%' }}
                                     onClick={handleShowCanvas}
                                 >
-                                   More  <TfiMore size={18} />
+                                  More    <RiMenuFold4Line size={18} />
                                 </Button>
                             </div>
         

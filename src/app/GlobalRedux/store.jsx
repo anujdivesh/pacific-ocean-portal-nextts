@@ -9,6 +9,7 @@ import offcanvasReducer from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlic
 import sideoffcanvasReducer from '@/app/GlobalRedux/Features/sideoffcanvas/sideoffcanvasSlice';
 import countryReducer from '@/app/GlobalRedux/Features/country/countrySlice';
 import coordinateReducer from '@/app/GlobalRedux/Features/coordinate/mapSlice'
+import authReducer from '@/app/GlobalRedux/Features/auth/authSlice'
 
 export const store = configureStore({
     reducer: {
@@ -19,7 +20,8 @@ export const store = configureStore({
         offcanvas:offcanvasReducer,
         sideoffcanvas:sideoffcanvasReducer,
         country:countryReducer,
-        coordinate:coordinateReducer
+        coordinate:coordinateReducer,
+        auth: authReducer,
     }
 })
 

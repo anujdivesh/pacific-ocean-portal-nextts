@@ -1,25 +1,30 @@
 "use server";
 
 import { z } from "zod";
-import { createSession, deleteSession } from "../lib/session";
-import { redirect } from "next/navigation";
+import { createSession, deleteSession } from "@/app/lib/session";
 
-const testUser = {
-  id: "1",
-  email: "contact@spc.int",
-  password: "12345678",
-};
-
+// Define the login form schema
 const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }).trim(),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters" })
-    .trim(),
+  username: z.string().min(3, { message: "Username must be at least 3 characters" }).trim(),
+  password: z.string().min(8, { message: "Password must be at least 8 characters" }).trim(),
 });
 
-export async function login( formData: FormData) {
-  const result = loginSchema.safeParse(Object.fromEntries(formData));
+// Define a more specific type for prevState
+interface PrevState {
+  errors?: {
+    username?: string[];
+    password?: string[];
+  };
+  success?: boolean;
+  message?: string; // Add a message field for API errors
+}
+
+export async function login(prevState: PrevState, formData: FormData) {
+  const username = formData.get("username") as string;
+  const password = formData.get("password") as string;
+
+  // Validate form data
+  const result = loginSchema.safeParse({ username, password });
 
   if (!result.success) {
     return {
@@ -27,22 +32,85 @@ export async function login( formData: FormData) {
     };
   }
 
-  const { email, password } = result.data;
+  try {
+    // Send credentials to the external API
+    const apiResponse = await fetch("https://dev-oceanportal.spc.int/middleware/api/token/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
 
-  if (email !== testUser.email || password !== testUser.password) {
+    // Handle API response
+    if (!apiResponse.ok) {
+      const errorData = await apiResponse.json();
+      return {
+        errors: {
+          username: [errorData.detail || "Invalid credentials"], // Use API error message if available
+        },
+        message: errorData.detail || "Login failed", // Add a generic message
+      };
+    }
+
+    const { access } = await apiResponse.json();
+    
+    // Fetch the user's account details using the access token
+    const accountResponse = await fetch("https://dev-oceanportal.spc.int/middleware/api/account/", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${access}`,
+      },
+    });
+
+    if (!accountResponse.ok) {
+      const errorData = await accountResponse.json();
+      return {
+        errors: {
+          username: [errorData.detail || "Failed to fetch account details"],
+        },
+        message: errorData.detail || "Failed to fetch account details",
+      };
+    }
+    const accountData = await accountResponse.json();
+    //const countryId = accountData.country;
+    let countryId = "";
+
+    if (Array.isArray(accountData) && accountData.length > 0) {
+      // Extract the country_id from the first element
+       countryId = accountData[0].country.id;
+      console.log("Country ID:", countryId);
+    
+      // Store the countryId and access token in the session
+      await createSession(countryId, access);
+    }
+    
+
+
+    // Extract the access token from the API response
+    //const { access } = await apiResponse.json();
+
+    // Store the access token in a session or cookie
+    //await createSession(JSON.stringify({ countryId,access })); 
+    //await createSession(access); // Pass the access token to createSession
+//    await createSession("hello", access);
+
+    // Return a success flag to update Redux state on the client
+    return { success: true,countryId:countryId };
+  } catch (error) {
+    console.error("API request failed:", error);
     return {
       errors: {
-        email: ["Invalid email or password"],
+        username: ["An error occurred while logging in"],
       },
+      message: "An error occurred while logging in",
     };
   }
-
-  await createSession(testUser.id);
-
-  redirect("/dashboard");
 }
 
 export async function logout() {
   await deleteSession();
-  redirect("/login");
+
+  // Return a success flag to update Redux state on the client
+  return { success: true };
 }

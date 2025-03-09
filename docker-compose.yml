@@ -7,3 +7,13 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - SESSION_SECRET=OCEANS_PACIFIC_COMMUNITY
+      - NEXT_PUBLIC_BASE_URL=https://dev-oceanportal.spc.int
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped

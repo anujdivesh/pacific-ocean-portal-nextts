@@ -9,6 +9,9 @@ import {getDateFromArray, formatDateToISOWithoutMilliseconds,getDay} from '@/com
 function DateSelector({item,period,startDateStr,endDateStr}) {
   const dispatch = useAppDispatch();
   const _isMounted = useRef(true);
+  const [startDateOrig, setStartDateOrig] = useState(new Date(item.layer_information.timeIntervalStartOriginal));
+    const [endDateOrig, setEndDateOrig] = useState(new Date(item.layer_information.timeIntervalEndOriginal));
+
     const [startDate, setStartDate] = useState(startDateStr);
     const [endDate, setEndDate] = useState(endDateStr);
     const dateArray = useRef();
@@ -20,6 +23,14 @@ function DateSelector({item,period,startDateStr,endDateStr}) {
     const [currentDate, setCurrentDate] = useState();
 
       const today = new Date();
+      const sevenDaysLater = new Date(today); // Copy the current date
+      sevenDaysLater.setDate(today.getDate() + 7);
+
+      const [starttoday, setstarttoday] = useState(today);
+      const [end7day, setend7day] = useState(sevenDaysLater);
+
+      const [startDate3, setStartDate3] = useState(startDateStr);
+    const [endDate3, setEndDate3] = useState(endDateStr);
       const [startDate2, setStartDate2] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
     
       const handleUpdateLayer = (id, updates) => {
@@ -115,6 +126,24 @@ function DateSelector({item,period,startDateStr,endDateStr}) {
         return () => { _isMounted.current = false }; 
         },[]);
 
+        const onChange = (dates,item) => {
+         // console.log(dates)
+          const [start, end] = dates;
+          setstarttoday(start);
+          setend7day(end);
+          if (start != null && end != null){
+
+          handleUpdateLayer(item.id, {
+            layer_information: {
+              ...item.layer_information,
+              timeIntervalStart:formatDateToISOWithoutMilliseconds(start),
+              timeIntervalEnd:formatDateToISOWithoutMilliseconds(end),
+              zoomToLayer:false // Updated value
+            }
+          });
+        }
+        };
+
   //new
   let content;
   if (item.layer_information.datetime_format === 'DAILY') {
@@ -178,6 +207,25 @@ function DateSelector({item,period,startDateStr,endDateStr}) {
       </select>
     );
   }
+  else if (item.layer_information.datetime_format === 'WFS_DAILY'){
+    content = (
+      <div style={{ paddingTop: 15, textAlign: 'center' }}>
+         <p style={{ fontSize: 13, paddingLeft: 15,textAlign:'left' }}>Date Range:</p>
+    <DatePicker
+      selected={starttoday}
+      onChange={(date)=>onChange(date,item)}
+      minDate={startDateOrig}
+      maxDate={endDateOrig}
+      startDate={starttoday}
+      endDate={end7day}
+      selectsRange
+      inline
+      showDisabledMonthNavigation
+    />
+  </div>
+ 
+    );
+  }
   
   else {
     content = <div>Default Content</div>;
@@ -186,14 +234,16 @@ function DateSelector({item,period,startDateStr,endDateStr}) {
 
   
 return(
-    <div className="row" style={{marginTop:'-5px',marginBottom:'8px'}}>
-        <div className="col-sm-4">
-        <p style={{fontSize:13,paddingLeft:15}}>Date Range:</p>
-        </div>
-        <div className="col-sm-6">
-        {content}
+  <div className="row" style={{ marginTop: '-5px', marginBottom: '8px' }}>
+  {item.layer_information.datetime_format !== 'WFS_DAILY' && (
+    <div className="col-sm-4">
+      <p style={{ fontSize: 13, paddingLeft: 15 }}>Date Range:</p>
     </div>
-    </div>
+  )}
+  <div className={item.layer_information.datetime_format === 'WFS_DAILY' ? 'col-sm-12' : 'col-sm-6'}>
+    {content}
+  </div>
+</div>
 )
 }
 export default DateSelector;

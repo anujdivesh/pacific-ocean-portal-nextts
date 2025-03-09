@@ -1,8 +1,8 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef,useEffect } from 'react';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import { hideoffCanvas } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
-import { useAppDispatch } from '@/app/GlobalRedux/hooks';
+import { useAppDispatch,useAppSelector } from '@/app/GlobalRedux/hooks';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import { Button } from 'react-bootstrap'; // Import Button component for the close button
@@ -11,9 +11,20 @@ import 'chart.js/auto';
 import Timeseries from './timeseries'; 
 import Tabular from './tablular'; 
 import DynamicImage from './getMap'; // Import the new DynamicImage component
-
+import Download from './download';
+import TimeseriesWfs from './timeseries_wfs';
 
 function BottomOffCanvas({ isVisible }) {
+
+    const mapLayer = useAppSelector((state) => state.mapbox.layers);
+   const [layerType, setLayerType] = useState('');
+   
+    // Effect to handle coordinate updates and API requests only when valid coordinates are present
+    useEffect(() => {
+        let layer_type = mapLayer[mapLayer.length - 1]?.layer_information.layer_type;
+        setLayerType(layer_type)
+      
+    }, [mapLayer]);
 
   const data = {
     labels: ['January', 'February', 'March', 'April', 'May'],
@@ -135,40 +146,54 @@ function BottomOffCanvas({ isVisible }) {
 
       {/* Tabs inside Offcanvas (no header) */}
       <Offcanvas.Body style={{ paddingTop: '3',borderRadius:0 }}>
+      {layerType === 'WMS' ? (
         <Tabs
-  activeKey={selectedTab}
-  onSelect={(k) => setSelectedTab(k)} // Set the selected tab
-  id="offcanvas-tabs"
-  className="mb-3 custom-tabs"
->
-<Tab eventKey="tab4" title="Get Map">
-    <div>
-    <DynamicImage height={height - 100} />
-    </div>
-  </Tab>
-<Tab eventKey="tab2" title="Timeseries">
-  <Timeseries height={height - 100} data={data} /> {/* Subtracting space for header */}
-            
-</Tab>
-  
-  <Tab eventKey="tab1" title="Tabular">
-    <div>
-    <Tabular
-                labels={['Wind Speed', 'Wave Direction', 'Wave Height']}
-                dateCount={24} // for 5 dates
-              />
-    </div>
-  </Tab>
+        activeKey={selectedTab}
+        onSelect={(k) => setSelectedTab(k)} // Set the selected tab
+        id="offcanvas-tabs"
+        className="mb-3 custom-tabs"
+      >
+      <Tab eventKey="tab4" title="Get Map">
+          <div>
+          <DynamicImage height={height - 100} />
+          </div>
+        </Tab>
+      <Tab eventKey="tab2" title="Timeseries">
+        <Timeseries height={height - 100} data={data} /> {/* Subtracting space for header */}
+                  
+      </Tab>
+        
+        <Tab eventKey="tab1" title="Tabular">
+          <div>
+          <Tabular
+                      labels={['Wind Speed', 'Wave Direction', 'Wave Height']}
+                      dateCount={24} // for 5 dates
+                    />
+          </div>
+        </Tab>
 
 
 
-  <Tab eventKey="tab3" title="Download ">
-    <div>
-      <h5>Content for Tab 3</h5>
-      <p>This is the content inside the third tab.</p>
-    </div>
-  </Tab>
-</Tabs>
+        <Tab eventKey="tab3" title="Download ">
+        <Download/>
+        </Tab>
+      </Tabs>
+       ) : (
+        <Tabs
+        activeKey={selectedTab}
+        onSelect={(k) => setSelectedTab(k)} // Set the selected tab
+        id="offcanvas-tabs"
+        className="mb-3 custom-tabs"
+      >
+    
+      <Tab eventKey="tab4" title="Timeseries">
+        <TimeseriesWfs height={height - 100} data={data} /> {/* Subtracting space for header */}
+                  
+      </Tab>
+
+      </Tabs>
+
+       )}
 
       </Offcanvas.Body>
     </Offcanvas>

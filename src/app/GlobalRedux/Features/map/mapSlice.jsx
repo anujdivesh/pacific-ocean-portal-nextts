@@ -17,12 +17,12 @@ const mapSlice = createSlice({
       layer: 'spc:pacific_eez3',
     },
     coastlineoverlay: {
-      url: 'https://opmgeoserver.gem.spc.int/geoserver/spc/wms',
-      layer: 'spc:Pacific_Coastlines_openstreet_polygon',
+      url: 'https://geonode.pacificdata.org/geoserver/geonode/wms',
+      layer: 'spc:pacific_coastlines_openstreet_polygon',
     },
     citynamesoverlay: {
       url: 'https://opmgeoserver.gem.spc.int/geoserver/spc/wms',
-      layer: 'spc:pacific_islands_capitals',
+      layer: 'spc:pac_city_names',
     },
    // citynamesoverlay: {
    //   url: 'https://opmgeoserver.gem.spc.int/geoserver/spc/wms',

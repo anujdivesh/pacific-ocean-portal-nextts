@@ -11,7 +11,8 @@ import { get_url } from '@/components/json/urls';
 const SmallMap = ({currentDataset}) => {
     const mapContainer2 = useRef(null);
     const layer_workbench = useAppSelector((state) => state.mapbox.layers);
-    const dataset_list = useAppSelector(state => state.dataset_list.value)
+    const dataset_list = useAppSelector(state => state.dataset_list.value);
+    const token = useAppSelector((state) => state.auth.token);
     const baseLayer = useRef();
     const _isMounted = useRef(true);
     const current_datatset = useRef(null);
@@ -69,14 +70,59 @@ const SmallMap = ({currentDataset}) => {
         }
       }
 
-      const fetchData = async (dataset_list,id) => {
+      const fetchData = async (dataset_list, id, token) => {
+        try {
+          var url = get_url('layer', id);  // Get the URL for the layer
+          // Construct the headers object
+          let headers = {};
+      
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`;  // Add Authorization header if token is available
+          }
+          console.log(token)
+          // Log the URL and headers for debugging
+          console.log("Fetching URL:", url);
+          console.log("Headers:", headers);
+      
+          // Make the fetch request
+          const response = await fetch(`${url}`, {  // Add the query string directly to the URL
+            method: 'GET',
+            headers: headers,  // Include headers
+          });
+      
+          // Handle the response
+          if (response.ok) {
+            const data = await response.json();
+            data.timeIntervalStartOriginal = data.timeIntervalStart;
+            data.timeIntervalEndOriginal = data.timeIntervalEnd;
+      
+            const jsonWithParent = {
+              id: dataset_list.id,
+              south_bound_latitude: dataset_list.south_bound_latitude,
+              east_bound_longitude: dataset_list.east_bound_longitude,
+              north_bound_latitude: dataset_list.north_bound_latitude,
+              west_bound_longitude: dataset_list.west_bound_longitude,
+              layer_information: data,
+            };
+      
+            dispatch(addMapLayer(jsonWithParent));  // Dispatch the action
+          } else {
+            console.error("Error in fetch:", response.status, response.statusText);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      
+      /*
+      const fetchData = async (dataset_list,id,token) => {
         try {
           var url = get_url('layer',id);
           await fetch(url)
   .then(response => response.json())
   .then(data => {
     data.timeIntervalStartOriginal = data.timeIntervalStart;
-
+    data.timeIntervalEndOriginal = data.timeIntervalEnd;
           const jsonWithParent = {
             id:dataset_list.id,
             south_bound_latitude:dataset_list.south_bound_latitude,
@@ -92,7 +138,7 @@ const SmallMap = ({currentDataset}) => {
         } catch (error) {
           //setError(error);
         }
-      };
+      };*/
       
 
     function initMap(){
@@ -130,15 +176,9 @@ const SmallMap = ({currentDataset}) => {
             }
             }
             if (!boolCheck.current){
-             // console.log(currentDataset)
-              fetchData(currentDataset,currentDataset.layer_information);
+              fetchData(currentDataset,currentDataset.layer_information,token);
               dispatch(hideModal())
-           //   console.log(current_datatset.current.layer_information)
-
-              //console.log(get_Data)
-             // console.log(current_datatset.current.layer_information)
-            //dispatch(setLayer(current_datatset.current))
-            //dispatch(addMapLayer(current_datatset.current));
+         
             }
             else{
               handleClick()

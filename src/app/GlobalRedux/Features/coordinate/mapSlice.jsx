@@ -8,7 +8,8 @@ const initialState = {
     y: null,
     sizex:null,
     sizey:null,
-    bbox:null
+    bbox:null,
+    station:null
   },
   // other state...
 };
