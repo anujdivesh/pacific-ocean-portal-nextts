@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Modal, Button,Form } from 'react-bootstrap';
-import '@/components/css/modal.css';
+import '@/components/css/welcomemodal.css';
 
 const WelcomeModal = () => {
   const [show, setShow] = useState(false);
@@ -56,7 +56,7 @@ const WelcomeModal = () => {
 
   return (
     <Modal show={show} onHide={handleClose} centered className="custom-modal">
-      <Modal.Header closeButton className="custom-header2">
+      <Modal.Header closeButton style={{backgroundColor:'#3f51b5', color:'white'}}>
        {/* <Modal.Title style={{ color: 'white' }}>Halo olaketa! Talitali fiefia! Talofa Koutou! Afio mai! Bula! </Modal.Title>
        */}
        <Modal.Title style={{ color: 'white' }}>Halo olaketa! </Modal.Title>
