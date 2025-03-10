@@ -1,25 +1,25 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button,Form } from 'react-bootstrap';
 import '@/components/css/modal.css';
 
 const WelcomeModal = () => {
   const [show, setShow] = useState(false);
   const [timesShown, setTimesShown] = useState(0);
+  const [isChecked, setIsChecked] = useState(true);
 
   useEffect(() => {
     const storedCount = localStorage.getItem('modalShownCount');
 
+    
     if (storedCount) {
       const count = parseInt(storedCount, 10);
       setTimesShown(count);
 
       // Show the modal only if it has been shown less than 500 times
-      if (count < 5) {
+      if (count < 500) {
         setShow(true); // Show the modal if count is less than 500
-      } else {
-        console.log('Modal count reached 500, not showing modal');
-      }
+      } 
     } else {
       // Initialize count to 0 for the first visit
       localStorage.setItem('modalShownCount', '0');
@@ -34,7 +34,7 @@ const WelcomeModal = () => {
     localStorage.setItem('modalShownCount', newCount.toString());
 
     // If the count reaches 500, stop showing the modal
-    if (newCount >= 5) {
+    if (newCount >= 500) {
       console.log('Modal count reached 500, stopping modal display');
       setShow(false); // Hide modal after 500
     } else {
@@ -42,9 +42,21 @@ const WelcomeModal = () => {
     }
   };
 
+  const handleCheckboxChange = (e) => {
+    const checked = e.target.checked;
+    e.target.blur();
+    setIsChecked(!checked);
+    if (!checked) {
+      // Set modal count to 100
+      localStorage.setItem("modalShownCount", 500);
+      setTimesShown(500);
+      setShow(false);
+    }
+  };
+
   return (
     <Modal show={show} onHide={handleClose} centered className="custom-modal">
-      <Modal.Header closeButton className="custom-header2">
+      <Modal.Header closeButton className="custom-header3">
        {/* <Modal.Title style={{ color: 'white' }}>Halo olaketa! Talitali fiefia! Talofa Koutou! Afio mai! Bula! </Modal.Title>
        */}
        <Modal.Title style={{ color: 'white' }}>Halo olaketa! </Modal.Title>
@@ -84,17 +96,34 @@ const WelcomeModal = () => {
 
         <br />
         <p style={{  color: 'grey',fontSize:13  }} className="text-center">Contact us: cosppac@spc.int</p>
+       
       </Modal.Body>
-      <Modal.Footer>
-      <Button 
-  variant="secondary" 
-  onClick={handleClose} 
-  size="sm" 
-  style={{ borderRadius: '0', padding: '5px 10px' }}
->
-  Close
-</Button>
-      </Modal.Footer>
+      <Modal.Footer className="d-flex justify-content-between align-items-center">
+      {/* Checkbox on the left */}
+      <Form.Group controlId="setModalCount" className="mb-0 d-flex align-items-center">
+  {/* Checkbox */}
+  <Form.Check
+    type="checkbox"
+    checked={isChecked}
+    onChange={handleCheckboxChange}
+    style={{ marginRight: "8px", borderRadius:"0" }} // Add space between checkbox and text
+  />
+  {/* Label */}
+  <Form.Label style={{ fontSize: 13, color: "grey", marginBottom: 0 }}>
+    Show at start-up
+  </Form.Label>
+</Form.Group>
+      {/* Close button on the right */}
+      <Button
+        variant="secondary"
+        onClick={handleClose}
+        size="sm"
+        style={{ borderRadius: "0", padding: "5px 10px" }}
+        aria-label="Close welcome modal"
+      >
+        Close
+      </Button>
+    </Modal.Footer>
     </Modal>
   );
 };

@@ -21,6 +21,7 @@ const SmallMap = ({currentDataset}) => {
     const boolCheck =useRef(false);
     const [error, setError] = useState('');
 
+
     const handleClick = () => {
       // Set the error message
       setError('*Warning : Layer exists in the workbench');
@@ -37,7 +38,7 @@ const SmallMap = ({currentDataset}) => {
             mapContainer2.current.remove();
         
     };
-      },[currentDataset]);
+      },[currentDataset,token]);
 
       function addBBox(map, bbox) {
      //   console.log(bbox)
@@ -79,10 +80,10 @@ const SmallMap = ({currentDataset}) => {
           if (token) {
             headers['Authorization'] = `Bearer ${token}`;  // Add Authorization header if token is available
           }
-          console.log(token)
+          //console.log(token)
           // Log the URL and headers for debugging
-          console.log("Fetching URL:", url);
-          console.log("Headers:", headers);
+          //console.log("Fetching URL:", url);
+          //console.log("Headers:", headers);
       
           // Make the fetch request
           const response = await fetch(`${url}`, {  // Add the query string directly to the URL

@@ -1,9 +1,11 @@
+"use client"; // Ensure this is a Client Component
 import React, { useState, useEffect } from 'react';
 import { Modal, Row, Col, Spinner } from 'react-bootstrap';
 import MyAccordion from './accordion';
 import AccordionMetadata from './accordion_metadata';
 import { get_url } from '@/components/json/urls';
 import { useAppSelector } from "@/app/GlobalRedux/hooks";
+import '@/components/css/modal.css'; // Import your CSS file
 
 const ExploreModal = ({ show, onClose, title, bodyContent }) => {
   const [theme, setTheme] = useState([]);
@@ -113,8 +115,8 @@ const ExploreModal = ({ show, onClose, title, bodyContent }) => {
   }, [theme, userId, selectedId]);
 
   return (
-    <Modal show={show} onHide={onClose} centered scrollable size="xl">
-      <Modal.Header closeButton>
+    <Modal show={show} onHide={onClose} centered scrollable size="xl" className="custom-modal">
+      <Modal.Header closeButton className="custom-header2">
         <Modal.Title style={{ fontSize: '18px' }}>
           {/* Show the "Tailored" button only if the user is logged in */}
           {userId && (
@@ -154,7 +156,7 @@ const ExploreModal = ({ show, onClose, title, bodyContent }) => {
           </Col>
         </Row>
       </Modal.Body>
-      <Modal.Footer className="custom-header">
+      <Modal.Footer className="custom-header2">
         <p style={{ fontSize: '12px', color: 'grey' }}>&copy; All Rights Reserved SPC </p>
       </Modal.Footer>
     </Modal>

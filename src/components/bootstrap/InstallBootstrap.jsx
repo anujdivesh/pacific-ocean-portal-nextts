@@ -7,7 +7,7 @@ const InstallBootstrap = () => {
     // Dynamically import Bootstrap's JavaScript
     import("bootstrap/dist/js/bootstrap.bundle.min.js")
       .then((bootstrap) => {
-        console.log("Bootstrap JS loaded successfully!");
+       // console.log("Bootstrap JS loaded successfully!");
       })
       .catch((error) => {
         console.error("Failed to load Bootstrap JS:", error);

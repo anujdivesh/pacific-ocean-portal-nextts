@@ -32,7 +32,7 @@ function Navigationbar({ topContent, mainContent }) {
   const [showLoginModal, setShowLoginModal] = useState(false); // State for controlling the login modal
   const [loginState, setLoginState] = useState({ errors: {}, success: false, message: "" }); // State for login form
   const [loading, setLoading] = useState(false); // Add a loading state
-
+/*
   // Fetch session on component mount
   useEffect(() => {
     const fetchSession = async () => {
@@ -56,7 +56,7 @@ function Navigationbar({ topContent, mainContent }) {
     };
 
     fetchSession();
-  }, [dispatch]);
+  }, [dispatch]);*/
 
   // Handle body class changes based on pathname
   useEffect(() => {
@@ -85,6 +85,7 @@ function Navigationbar({ topContent, mainContent }) {
     if (response.success) {
       dispatch(logoutAction()); // Dispatch the Redux logout action
       dispatch(updateCountry(null))
+      dispatch(updateToken(null))
       // window.location.href = "/login"; // Redirect to the login page
     }
   };
@@ -102,6 +103,7 @@ function Navigationbar({ topContent, mainContent }) {
     if (result.success) {
       dispatch(loginAction()); // Update Redux store
       dispatch(updateCountry(result.countryId))
+      dispatch(updateToken(result.token));
       setShowLoginModal(false); // Close the modal
     }
   };
@@ -156,6 +158,7 @@ function Navigationbar({ topContent, mainContent }) {
                     Explorer
                   </Link>
                 </li>
+               
                 <li className="nav-item">
                   <Link
                     className={pathname == "/library" ? "active-nav nav-link" : "nav-link"}
@@ -178,13 +181,20 @@ function Navigationbar({ topContent, mainContent }) {
                     About us
                   </Link>
                 </li>
+               
                 {isLoggedin ? (
-                  // Logout Button
+                  <>
+                   <li className="nav-item active">
+                   <Link className={pathname == "/dashboard" ? "active-nav nav-link" : "nav-link"} href="/dashboard">
+                     Dashboard
+                   </Link>
+                 </li>
                   <li className="nav-item">
                     <Button variant="success" onClick={handleLogout}>
                       Logout
                     </Button>
                   </li>
+                  </>
                 ) : (
                   // Login Dropdown
                   <li className="nav-item dropdown">

@@ -24,8 +24,9 @@ import { CgMenuRound } from "react-icons/cg";
 import { MdOutlineMenuOpen } from "react-icons/md";
 import { CgMenuLeft } from "react-icons/cg";
 import { RiMenuFold4Line } from "react-icons/ri";
-import { CgMenuGridO } from "react-icons/cg";
+import { CgMenuGridO,CgMoreO } from "react-icons/cg";
 import { BiFoodMenu } from "react-icons/bi";
+import { CgMoreVerticalO } from "react-icons/cg";
 
 const ExploreModal = dynamic(() => import('@/components/tools/model'), {ssr: false})
 
@@ -147,7 +148,7 @@ const SideBar = () => {
                                     style={{ padding: '8px', color: 'white', width: '38%' }}
                                     onClick={handleShowCanvas}
                                 >
-                                  More    <RiMenuFold4Line size={18} />
+                                <CgMoreO size={17} style={{marginTop:'-3px'}}/>&nbsp;More
                                 </Button>
                             </div>
         

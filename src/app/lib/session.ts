@@ -9,7 +9,10 @@ if (!secretKey) {
 const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function createSession(countryId: string, userId: string) {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  //const expiresAt = new Date(Date.now() + 1 * 24 * 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 23 * 60 * 60 * 1000);
+  //const expiresAt = new Date(Date.now() + 2 * 60 * 1000);
+
   const session = await encrypt({ countryId, userId, expiresAt });
 
   const cookieStore = await cookies();

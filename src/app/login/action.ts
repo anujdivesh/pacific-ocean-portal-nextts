@@ -79,7 +79,7 @@ export async function login(prevState: PrevState, formData: FormData) {
     if (Array.isArray(accountData) && accountData.length > 0) {
       // Extract the country_id from the first element
        countryId = accountData[0].country.id;
-      console.log("Country ID:", countryId);
+    //  console.log("Country ID:", countryId);
     
       // Store the countryId and access token in the session
       await createSession(countryId, access);
@@ -96,7 +96,7 @@ export async function login(prevState: PrevState, formData: FormData) {
 //    await createSession("hello", access);
 
     // Return a success flag to update Redux state on the client
-    return { success: true,countryId:countryId };
+    return { success: true,countryId:countryId,token:access };
   } catch (error) {
     console.error("API request failed:", error);
     return {

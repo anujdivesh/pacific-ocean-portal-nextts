@@ -105,7 +105,7 @@ const NestedAccordion = ({ data, openIds }) => {
                 cursor: 'pointer',
                 backgroundColor: activeItemId === contentItem.id ? '#d3f4ff' : 'transparent', // Change background color if active
                 borderRadius: '4px', // Optional: for rounded corners
-                padding: '4px',
+                padding: '2px',
               }}
             >
               <div className="item">{contentItem.name}</div>
