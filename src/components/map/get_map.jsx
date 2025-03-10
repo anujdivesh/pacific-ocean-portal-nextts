@@ -1,11 +1,10 @@
 "use client" // client side rendering 
 import React, { useEffect, useState, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
-import { Modal, Button,Row,Col, Accordion, AccordionItem, AccordionHeader, AccordionBody } from 'react-bootstrap';
 import L from 'leaflet';
-import { useAppSelector, useAppDispatch, useAppStore } from '@/app/GlobalRedux/hooks'
+import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
 import '@/components/functions/L.TileLayer.BetterWMS';
-import { setCenter, setZoom, setBounds,addLayer, removeLayer,setBaseMapLayer,setEEZEnable,setCoastlineEnable,setCityNameEnable } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { setCenter, setZoom, setBaseMapLayer,setEEZEnable,setCoastlineEnable,setCityNameEnable } from '@/app/GlobalRedux/Features/map/mapSlice';
 import addWMSTileLayer from '../functions/addWMSTileLayer';
 import "leaflet-bing-layer";
 import '@/components/css/legend.css';
