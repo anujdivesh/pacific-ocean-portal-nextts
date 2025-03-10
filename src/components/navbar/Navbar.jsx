@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 // React Bootstrap
-import '@/components/css/modal.css'
+import '@/components/navbar/navbarmodal.css'
 import Button from "react-bootstrap/Button";
 import Navbar from "react-bootstrap/Navbar";
 import Modal from "react-bootstrap/Modal";
@@ -16,7 +16,7 @@ import SideBar from "../sidebar/sidebar";
 import "@/components/navbar/navbar.css";
 import "@/components/navbar/sidebar.css";
 import "@/components/css/app.css";
-import "@/components/css/map.css";
+import "@/components/css/mapnav.css";
 // Redux
 import { useAppSelector, useAppDispatch } from "@/app/GlobalRedux/hooks";
 import { hideoffCanvas } from "@/app/GlobalRedux/Features/offcanvas/offcanvasSlice";

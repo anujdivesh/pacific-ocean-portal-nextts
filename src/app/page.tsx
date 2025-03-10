@@ -1,6 +1,6 @@
 "use client";
 import dynamic from 'next/dynamic';
-import '@/components/css/map.css';
+import '@/components/css/mapmain.css';
 
 // Dynamically import MainContainer with SSR disabled
 const MainContainer = dynamic(() => import('@/components/tools/main_container'), {
