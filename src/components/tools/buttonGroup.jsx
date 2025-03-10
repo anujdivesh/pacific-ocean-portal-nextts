@@ -1,25 +1,17 @@
 "use client" // client side rendering 
-import React, { useState,useRef,useEffect } from 'react';
-import {Row,Col,Container,Button} from 'react-bootstrap';
-import Accordion from 'react-bootstrap/Accordion';
+import React from 'react';
+import {Row,Button} from 'react-bootstrap';
 import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
-import '@/components/css/workbench.css';
+import '@/components/css/butttongroup.css';
 import { setDataset } from '@/app/GlobalRedux/Features/dataset/dataSlice';
-import { hideModal,showModaler } from '@/app/GlobalRedux/Features/modal/modalSlice';
+import { showModaler } from '@/app/GlobalRedux/Features/modal/modalSlice';
 import { setAccordion } from '@/app/GlobalRedux/Features/accordion/accordionSlice';
 import Dropdown from 'react-bootstrap/Dropdown';
-import { FaSearch } from "react-icons/fa";
-import { MdOutlineMarkUnreadChatAlt } from "react-icons/md";
-import { setBounds,updateMapLayer, removeMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { updateMapLayer, removeMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
 import { showoffCanvas, hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { VscTools } from "react-icons/vsc";
 import { IoIosAddCircleOutline,IoMdRemoveCircleOutline } from "react-icons/io";
 import { FaRegTrashCan } from "react-icons/fa6";
-import BottomOffCanvas from './bottom_offcanvas';
-import ColorScale from './color_scale';
-import Legend from './legend';
-import Opacity from './opacity';
 import { get_url } from '@/components/json/urls';
 
 function ButtonGroupComp({item}) {

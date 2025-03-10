@@ -5,7 +5,7 @@ import { FaEye } from 'react-icons/fa';
 import '@/components/css/card.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAppSelector, useAppDispatch, useAppStore } from '@/app/GlobalRedux/hooks'
+import { useAppSelector } from '@/app/GlobalRedux/hooks'
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);

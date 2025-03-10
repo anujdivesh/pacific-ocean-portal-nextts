@@ -2,8 +2,8 @@ import React,{useState,useEffect,useRef} from 'react';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import '@/components/css/datepicker.css';
-import { setBounds,updateMapLayer, removeMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
-import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks';
+import { updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
+import {  useAppDispatch } from '@/app/GlobalRedux/hooks';
 import {getDateFromArray, formatDateToISOWithoutMilliseconds,getDay} from '@/components/tools/helper';
 
 function DateSelector({item,period,startDateStr,endDateStr}) {

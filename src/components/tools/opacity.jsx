@@ -1,7 +1,8 @@
 import React,{useState} from 'react';
-import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
-import { addMapLayer, removeMapLayer,updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
-import { Modal,Row,Col, Accordion, AccordionItem, AccordionHeader, AccordionBody } from 'react-bootstrap';
+import { useAppDispatch } from '@/app/GlobalRedux/hooks'
+import { updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { Row,Col } from 'react-bootstrap';
+
 function Opacity({ item,id}) {
   const dispatch = useAppDispatch();
   const [value, setValue] = useState(1);

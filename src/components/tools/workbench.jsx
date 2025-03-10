@@ -1,7 +1,7 @@
 "use client"; // client-side rendering
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Col, Card, Button, Form } from 'react-bootstrap';
+import { Col, Card } from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion';
 import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks';
 import '@/components/css/workbench.css';
@@ -11,7 +11,7 @@ import ColorScale from './color_scale';
 import Legend from './legend';
 import Opacity from './opacity';
 import DateSelector from './date_selector';
-import { addMapLayer, removeMapLayer, updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { addMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
 import { useAccordionButton } from 'react-bootstrap/AccordionButton';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import CheckBox from './checkbox';

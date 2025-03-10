@@ -1,10 +1,6 @@
-import Accordion from 'react-bootstrap/Accordion';
-import React, { useState,useEffect } from 'react';
-import { CiFolderOn } from "react-icons/ci";
-import { FaRegFolderOpen } from "react-icons/fa";
+import React, {useEffect } from 'react';
 import NestedAccordion from './nested_accordion';
-import { useAppSelector, useAppDispatch, useAppStore } from '@/app/GlobalRedux/hooks'
-import { get_url } from '@/components/json/urls';
+import { useAppSelector } from '@/app/GlobalRedux/hooks'
 function MyAccordion({dataset}) {
     const accordion_val = useAppSelector((state) => state.accordion.value);
 

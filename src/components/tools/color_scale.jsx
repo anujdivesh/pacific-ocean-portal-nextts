@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
-import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
-import { addMapLayer, removeMapLayer,updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { useAppDispatch } from '@/app/GlobalRedux/hooks'
+import { removeMapLayer,updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
 import '@/components/css/input.css'
 import { get_url } from '@/components/json/urls';
 

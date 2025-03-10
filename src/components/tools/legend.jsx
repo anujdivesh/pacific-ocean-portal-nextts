@@ -1,5 +1,4 @@
 import React from 'react';
-import { get_url } from '@/components/json/urls';
 
 function Legend({url}) {
 return(

@@ -6,7 +6,6 @@ import { useAppDispatch,useAppSelector } from '@/app/GlobalRedux/hooks';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import { Button } from 'react-bootstrap'; // Import Button component for the close button
-import dynamic from 'next/dynamic';
 import 'chart.js/auto';
 import Timeseries from './timeseries'; 
 import Tabular from './tablular'; 

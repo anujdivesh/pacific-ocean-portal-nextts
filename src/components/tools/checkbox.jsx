@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
-import {Col, Card, Button, Form} from 'react-bootstrap';
-import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
-import { addMapLayer, removeMapLayer,updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { Form} from 'react-bootstrap';
+import {  useAppDispatch } from '@/app/GlobalRedux/hooks'
+import { updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
 
 function CheckBox({ item}) {
 

@@ -1,32 +1,18 @@
 "use client" // client side rendering 
 import React, { useEffect, useState, useRef } from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import dynamic from 'next/dynamic';
-import { useAppSelector, useAppDispatch, useAppStore } from '@/app/GlobalRedux/hooks'
+import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
 import { hideModal,showModaler } from '@/app/GlobalRedux/Features/modal/modalSlice';
 import MyWorkbench from '../tools/workbench';
-import { IoIosAddCircleOutline } from "react-icons/io";
-import { IoInformationCircleOutline } from "react-icons/io5";
-import { FaPlusCircle } from "react-icons/fa";
-import { FaSearch } from "react-icons/fa";
 import { setDataset } from '@/app/GlobalRedux/Features/dataset/dataSlice';
 import { setAccordion } from '@/app/GlobalRedux/Features/accordion/accordionSlice';
-import { showsideoffCanvas, hidesideoffCanvas  } from '@/app/GlobalRedux/Features/sideoffcanvas/sideoffcanvasSlice';
+import { showsideoffCanvas  } from '@/app/GlobalRedux/Features/sideoffcanvas/sideoffcanvasSlice';
 import { setBounds  } from '@/app/GlobalRedux/Features/map/mapSlice';
 import SideOffCanvas from '../tools/side_offcanvas';
-import { showoffCanvas, hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
-import { TfiMore } from "react-icons/tfi";
+import {  hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
 import { MdAddCircleOutline } from "react-icons/md";
-import { CgDetailsMore } from "react-icons/cg";
-import { CiMenuFries } from "react-icons/ci";
-import { AiOutlineMenu } from "react-icons/ai";
-import { CgMenuRound } from "react-icons/cg";
-import { MdOutlineMenuOpen } from "react-icons/md";
-import { CgMenuLeft } from "react-icons/cg";
-import { RiMenuFold4Line } from "react-icons/ri";
-import { CgMenuGridO,CgMoreO } from "react-icons/cg";
-import { BiFoodMenu } from "react-icons/bi";
-import { CgMoreVerticalO } from "react-icons/cg";
+import { CgMoreO } from "react-icons/cg";
 
 const ExploreModal = dynamic(() => import('@/components/tools/model'), {ssr: false})
 

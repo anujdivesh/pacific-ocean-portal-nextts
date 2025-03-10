@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Modal,Row,Col, Accordion, AccordionItem, AccordionHeader, AccordionBody } from 'react-bootstrap';
+import { Row,Col } from 'react-bootstrap';
 import '@/components/css/slider.css'
 import { FaPlay, FaPause, FaForward, FaBackward } from 'react-icons/fa'; 
-import {roundToNearestSixHours, formatDateToISOWithoutMilliseconds,getWmsTimeDimension} from '@/components/tools/helper';
-import Button from 'react-bootstrap/Button';
+import { formatDateToISOWithoutMilliseconds} from '@/components/tools/helper';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { setBounds,updateMapLayer, removeMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
-import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks';
+import { updateMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
+import {useAppDispatch } from '@/app/GlobalRedux/hooks';
 import Badge from 'react-bootstrap/Badge';
 
 function RangeSlider({item}) { // Default value for the slider

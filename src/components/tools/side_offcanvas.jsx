@@ -1,9 +1,9 @@
 import React from 'react';
 import Offcanvas from 'react-bootstrap/Offcanvas';
-import { Container, Row, Col, Button } from 'react-bootstrap';
-import { showsideoffCanvas, hidesideoffCanvas  } from '@/app/GlobalRedux/Features/sideoffcanvas/sideoffcanvasSlice';
+import { Button } from 'react-bootstrap';
+import { hidesideoffCanvas  } from '@/app/GlobalRedux/Features/sideoffcanvas/sideoffcanvasSlice';
 import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks';
-import { setCenter, setZoom, setBounds,addMapLayer, removeAllMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { removeAllMapLayer } from '@/app/GlobalRedux/Features/map/mapSlice';
 
 function SideOffCanvas({isVisible}) {
     const dispatch = useAppDispatch();

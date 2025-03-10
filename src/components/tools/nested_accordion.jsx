@@ -1,9 +1,9 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Accordion, Spinner } from 'react-bootstrap';
 import '@/components/css/accordion.css';
 import { IoMdAddCircleOutline, IoMdCheckmarkCircleOutline } from "react-icons/io";
-import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks';
+import { useAppDispatch } from '@/app/GlobalRedux/hooks';
 import { setDataset } from '@/app/GlobalRedux/Features/dataset/dataSlice';
 
 const NestedAccordion = ({ data, openIds }) => {

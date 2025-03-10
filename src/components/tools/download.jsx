@@ -1,7 +1,6 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, {  useEffect, useRef } from 'react';
 import { useAppSelector } from '@/app/GlobalRedux/hooks';
-import { Spinner } from 'react-bootstrap'; // Import Spinner from react-bootstrap
 
 function Download({ height }) {
   const mapLayer = useAppSelector((state) => state.mapbox.layers);

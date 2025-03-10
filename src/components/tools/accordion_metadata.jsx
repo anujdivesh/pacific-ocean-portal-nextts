@@ -1,11 +1,9 @@
 import Accordion from 'react-bootstrap/Accordion';
 import React, { useState } from 'react';
-import { CiFolderOn } from "react-icons/ci";
-import { FaRegFolderOpen } from "react-icons/fa";
-import '@/components/css/accordion.css'
+import '@/components/css/accordionmetadata.css'
 import SmallMap from '../map/small_map';
-import { useAppSelector, useAppDispatch, useAppStore } from '@/app/GlobalRedux/hooks'
-import { hideModal,showModaler } from '@/app/GlobalRedux/Features/modal/modalSlice';
+import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
+import { hideModal } from '@/app/GlobalRedux/Features/modal/modalSlice';
 function AccordionMetadata() {
     const [open, setOpen] = useState(null);
 

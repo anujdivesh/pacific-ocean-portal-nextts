@@ -6,6 +6,7 @@ import "./globals.css";
 import Navigationbar from "@/components/navbar/Navbar";
 import StoreProviderWrapper from "@/components/StoreProviderWrapper";
 import ClientBootstrap from "@/components/bootstrap/ClientBootstrap"; // Import the new client component
+import ClientAuth from "@/components/ClientAuth";
 // Fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <StoreProviderWrapper>
 
+        <ClientAuth />
           <Navigationbar mainContent={children} topContent={null} />
 
         </StoreProviderWrapper>
