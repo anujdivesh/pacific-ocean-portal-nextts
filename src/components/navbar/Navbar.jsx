@@ -32,7 +32,7 @@ function Navigationbar({ topContent, mainContent }) {
   const [showLoginModal, setShowLoginModal] = useState(false); // State for controlling the login modal
   const [loginState, setLoginState] = useState({ errors: {}, success: false, message: "" }); // State for login form
   const [loading, setLoading] = useState(false); // Add a loading state
-/*
+
   // Fetch session on component mount
   useEffect(() => {
     const fetchSession = async () => {
@@ -56,7 +56,7 @@ function Navigationbar({ topContent, mainContent }) {
     };
 
     fetchSession();
-  }, [dispatch]);*/
+  }, [dispatch]);
 
   // Handle body class changes based on pathname
   useEffect(() => {
