@@ -3,10 +3,6 @@
     border-radius: 0; /* Removes the rounded corners */
   }
   
-  .custom-header3 {
-    background-color: #3f51b5; 
-    color: white;
-  }
 
   .custom-header2 {
     color: white;
@@ -61,5 +57,3 @@
   padding-right: 2; /* Remove default padding */
   /* You can add more styles here if needed */
 }
-
-
