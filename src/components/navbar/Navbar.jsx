@@ -97,7 +97,7 @@ function Navigationbar({ topContent, mainContent }) {
     
     const formData = new FormData(e.target); // Get form data
     const result = await login(null, formData); // Call the server-side login action
-    
+    console.log(result)
     setLoginState(result); // Update login state
     setLoading(false); // Set loading to false once login is done
     if (result.success) {
