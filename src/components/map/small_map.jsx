@@ -107,6 +107,15 @@ const SmallMap = ({currentDataset}) => {
             };
       
             dispatch(addMapLayer(jsonWithParent));  // Dispatch the action
+
+              dispatch(
+                setBounds({
+                  west:  dataset_list.west_bound_longitude,
+                  east: dataset_list.east_bound_longitude,
+                  south: dataset_list.south_bound_latitude,
+                  north: dataset_list.north_bound_latitude,
+                })
+              );
           } else {
             console.error("Error in fetch:", response.status, response.statusText);
           }

@@ -65,7 +65,7 @@ function RangeSlider({item}) { // Default value for the slider
           sliderRef.current.value = newValue;
           setSliderValue(timestampToDate(newValue));
         }
-      }, 1500); // Check every 1.5 seconds
+      }, 2500); // Check every 1.5 seconds
   
       setIntervalId(id); // Store the interval ID for later cleanup
     } else {

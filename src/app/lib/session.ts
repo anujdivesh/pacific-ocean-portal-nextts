@@ -55,6 +55,7 @@ export async function decrypt(session: string | undefined = "") {
   }
 }*/
 
+/*
 export async function decrypt(session: string | undefined = "") {
   try {
     // Check if the session token is provided
@@ -64,7 +65,7 @@ export async function decrypt(session: string | undefined = "") {
     }
 
     // Log the session token for debugging
-  //  console.log("Session Token:", session);
+    console.log("Session Token:", session);
 
     // Verify and decode the JWT
     const { payload } = await jwtVerify(session, encodedKey, {
@@ -78,6 +79,25 @@ export async function decrypt(session: string | undefined = "") {
   } catch (error) {
  console.log(error)
 
+    return null;
+  }
+}*/
+
+export async function decrypt(session: string | undefined = "") {
+  try {
+    if (!session) {
+      console.error("Session token is missing or empty.");
+      return null;
+    }
+
+
+    const { payload } = await jwtVerify(session, encodedKey, {
+      algorithms: ["HS256"],
+    });
+
+
+    return payload;
+  } catch (error) {
     return null;
   }
 }

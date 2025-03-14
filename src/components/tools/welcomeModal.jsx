@@ -56,7 +56,7 @@ const WelcomeModal = () => {
 
   return (
     <Modal show={show} onHide={handleClose} centered className="custom-modal">
-      <Modal.Header closeButton style={{backgroundColor:'#3f51b5', color:'white'}}>
+      <Modal.Header closeButton style={{backgroundColor:'#3f51b5', color:'white'}} closeVariant="white">
        {/* <Modal.Title style={{ color: 'white' }}>Halo olaketa! Talitali fiefia! Talofa Koutou! Afio mai! Bula! </Modal.Title>
        */}
        <Modal.Title style={{ color: 'white' }}>Halo olaketa! </Modal.Title>

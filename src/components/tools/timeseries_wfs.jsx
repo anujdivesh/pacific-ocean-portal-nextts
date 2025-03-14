@@ -97,7 +97,7 @@ function TimeseriesWfs({ height }) {
 
   useEffect(() => {
     //console.log("mapLayer updated:", mapLayer);  // Debugging line
-    const layerInformation = mapLayer[lastlayer.current]?.layer_information;
+    const layerInformation = mapLayer[mapLayer.length - 1]?.layer_information;
 
     
     if (isCoordinatesValid && mapLayer.length > 0) {

@@ -4,7 +4,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks'
 import '@/components/functions/L.TileLayer.BetterWMS';
-import { setCenter, setZoom, setBaseMapLayer,setEEZEnable,setCoastlineEnable,setCityNameEnable } from '@/app/GlobalRedux/Features/map/mapSlice';
+import { setCenter, setZoom, setBaseMapLayer,setEEZEnable,setCoastlineEnable,setCityNameEnable, setBounds } from '@/app/GlobalRedux/Features/map/mapSlice';
 import addWMSTileLayer from '../functions/addWMSTileLayer';
 import "leaflet-bing-layer";
 import '@/components/css/legend.css';
@@ -50,59 +50,59 @@ const MapBox = () => {
     
     // Function to fetch GeoJSON and plot blue markers
    // Function to fetch GeoJSON and plot blue markers
-const fetchAndPlotGeoJSON = async (url) => {
-  try {
-    const response = await fetch(url);
-    const geojsonData = await response.json();
+    const fetchAndPlotGeoJSON = async (url) => {
+      try {
+        const response = await fetch(url);
+        const geojsonData = await response.json();
 
-    // Plot the GeoJSON data with blue markers and popups
-    L.geoJSON(geojsonData, {
-      pointToLayer: function (feature, latlng) {
-        // Create a marker with a blue icon
-        const marker = L.marker(latlng, { icon: blueIcon });
+        // Plot the GeoJSON data with blue markers and popups
+        L.geoJSON(geojsonData, {
+          pointToLayer: function (feature, latlng) {
+            // Create a marker with a blue icon
+            const marker = L.marker(latlng, { icon: blueIcon });
 
-        // Check if the feature has a 'name' property for popup content (or any other property you need)
-        const popupContent = `
-          ${feature.properties.PORT_NAME || "No name provided"}
-        `;
+            // Check if the feature has a 'name' property for popup content (or any other property you need)
+            const popupContent = `
+              ${feature.properties.PORT_NAME || "No name provided"}
+            `;
 
-        // Add a popup to the marker
-        marker.bindPopup(popupContent);
+            // Add a popup to the marker
+            marker.bindPopup(popupContent);
 
-        // Attach a custom event handler to the popup's link
-        marker.on('popupopen', () => {
-          // When the popup opens, attach the event handler to the link
-          const link = document.querySelector('.popup-link');
-          if (link) {
-            link.addEventListener('click', (e) => {
-              e.preventDefault();
-              // Dispatch the action when the link is clicked
+            // Attach a custom event handler to the popup's link
+            marker.on('popupopen', () => {
+              // When the popup opens, attach the event handler to the link
+              const link = document.querySelector('.popup-link');
+              if (link) {
+                link.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  // Dispatch the action when the link is clicked
+                });
+              }
             });
-          }
-        });
 
-        marker.on('click', () => {
-          console.log('hello')
-          // Log the 'PORT_NAME' property of the feature
-          var station = feature.properties.AAC;
-          var x = null;
-          var y = null;
-          var sizex = null;
-          var sizey = null;
-          var bbox = null;
-          
-          dispatch(setCoordinates({ x, y, sizex, sizey,bbox,station }));
-          dispatch(showoffCanvas());
+            marker.on('click', () => {
+              console.log('hello')
+              // Log the 'PORT_NAME' property of the feature
+              var station = feature.properties.AAC;
+              var x = null;
+              var y = null;
+              var sizex = null;
+              var sizey = null;
+              var bbox = null;
+              
+              dispatch(setCoordinates({ x, y, sizex, sizey,bbox,station }));
+              dispatch(showoffCanvas());
 
-        });
+            });
 
-        return marker; // Return the marker with the popup attached
-      },
-    }).addTo(mapRef.current); // Assuming mapRef.current is your Leaflet map reference
-  } catch (error) {
-    console.error('Error fetching GeoJSON data:', error);
-  }
-};
+            return marker; // Return the marker with the popup attached
+          },
+        }).addTo(mapRef.current); // Assuming mapRef.current is your Leaflet map reference
+      } catch (error) {
+        console.error('Error fetching GeoJSON data:', error);
+      }
+    };
 
 
 
@@ -132,7 +132,7 @@ const fetchAndPlotGeoJSON = async (url) => {
           div.style.marginLeft = '-1px';
           //
          // div.style.width = '50px';
-          
+         L.DomEvent.disableClickPropagation(div);
          return div;
         };
         legendColorRef2.current.addTo(mapRef.current);
@@ -147,7 +147,7 @@ const fetchAndPlotGeoJSON = async (url) => {
           div.style.marginRight = '-12px';
           //
          // div.style.width = '50px';
-          
+         L.DomEvent.disableClickPropagation(div);
          return div;
         };
         legendColorRef3.current.addTo(mapRef.current);
@@ -156,6 +156,7 @@ const fetchAndPlotGeoJSON = async (url) => {
       legendColorRef.current.onAdd = function() {
         // Create a div container for the legend
         var div = L.DomUtil.create("div", "legend");
+      //  div.style.backgroundColor = " 	#B2BEB5";
       
         // Add the heading
        // div.innerHTML += "<h4>Note</h4>";
@@ -211,7 +212,7 @@ const fetchAndPlotGeoJSON = async (url) => {
             id="city-check" 
             type="checkbox"
             ${checkboxCheckedCity ? 'checked' : ''}
-          /> City Names
+          /> Pacific Names
         </label>
 
         `;
@@ -232,6 +233,7 @@ const fetchAndPlotGeoJSON = async (url) => {
         coastCheck.addEventListener("change", handleCheckboxChangeCoast);
         citynameCheck.addEventListener("change", handleCheckboxChangeCity);
         // Return the div to Leaflet
+        L.DomEvent.disableClickPropagation(div);
         return div;
       };
       
@@ -304,7 +306,8 @@ const fetchAndPlotGeoJSON = async (url) => {
           //belowmincolor: layer.layer_information.belowmincolor,
           numcolorbands: layer.layer_information.numcolorbands,
           time: layer.layer_information.timeIntervalEnd,
-          logscale: layer.layer_information.logscale
+          logscale: layer.layer_information.logscale,
+          crs: L.CRS.EPSG4326
         },handleShow);
 
         layerGroup.addLayer(wmsLayer);
@@ -327,7 +330,7 @@ const fetchAndPlotGeoJSON = async (url) => {
           numcolorbands: layer.layer_information.numcolorbands,
           time: layer.layer_information.timeIntervalStart,
           logscale: layer.layer_information.logscale,
-          //crs: L.CRS84,  // Define CRS as EPSG:4326
+          crs: L.CRS.EPSG4326,  // Define CRS as EPSG:4326
           //bbox: bbox,
         },handleShow);
         layerGroup.addLayer(wmsLayer);
@@ -340,6 +343,7 @@ const fetchAndPlotGeoJSON = async (url) => {
           styles: stylname[1],
           time: layer.layer_information.timeIntervalStart,
           logscale: layer.layer_information.logscale,
+          crs: L.CRS.EPSG4326,
           //crs: L.CRS84,  // Define CRS as EPSG:4326
           //bbox: bbox,
         },handleShow);
@@ -360,6 +364,7 @@ const fetchAndPlotGeoJSON = async (url) => {
           numcolorbands: layer.layer_information.numcolorbands,
           time: layer.layer_information.timeIntervalStart,
           logscale: layer.layer_information.logscale,
+          crs: L.CRS.EPSG4326,
         },handleShow);
         layerGroup.addLayer(wmsLayer);
       }
@@ -386,74 +391,31 @@ const fetchAndPlotGeoJSON = async (url) => {
 
    
   
-    
+       // Function to handle map move/zoom
+       const handleMoveEnd = () => {
+        if (mapRef.current) {
+          const newCenter = mapRef.current.getCenter();
+          const newZoom = mapRef.current.getZoom();
+          const newBounds = mapRef.current.getBounds();
+      
+          // Extract serializable data from the LatLngBounds object
+          const serializableBounds = {
+            south: newBounds.getSouth(),
+            west: newBounds.getWest(),
+            north: newBounds.getNorth(),
+            east: newBounds.getEast(),
+          };
+      
+          // Dispatch serializable data
+          dispatch(setCenter([newCenter.lat, newCenter.lng]));
+          dispatch(setZoom(newZoom));
+          dispatch(setBounds(serializableBounds)); // Dispatch serializable bounds
+        }
+      };
 
-      const  handleMoveEnd = () => {
-      const newCenter = mapRef.current.getCenter();
-      const newZoom = mapRef.current.getZoom();
-      dispatch(setCenter([newCenter.lat, newCenter.lng]));
-      dispatch(setZoom(newZoom));
-     };
   
       mapRef.current.on('moveend', handleMoveEnd);
 
-      const fetchData = async () => {
-        try {
-          const resp = await fetch("https://opmgeoserver.gem.spc.int/geoserver/spc/wfs?service=WFS&version=1.1.0&request=GetFeature&typeNames=spc:pacific_eez3&outputFormat=application/json");
-          const customData = await resp.json();
-        //const customData = require('../shorelineDatasets/'+siteRef+'_shoreline_'+yearRef+'.json');
-      var newWmsLayer = L.geoJson(customData, {
-      }).addTo(mapRef.current);
-      setWmsLayer(newWmsLayer);
-
-        } catch (err) {
-          console.log(err.message);
-        } 
-      };
-/*
-     if(enable_eez){
-     const newWmsLayer = L.tileLayer.wms(eezoverlay.url, {
-        layers: eezoverlay.layer, // Replace with your WMS layer name
-        format: 'image/png',
-        transparent: true,
-      }).addTo(mapRef.current);
-    //fetchData()
-
-    }
-    else{
-      if (wmsLayer) {
-        mapRef.current.removeLayer(wmsLayer);
-        setWmsLayer(null);
-      }
-    }
-    if(enable_coastline){
-      const newWmsLayer2 = L.tileLayer.wms(coastlineoverlay.url, {
-        layers: coastlineoverlay.layer, // Replace with your WMS layer name
-        format: 'image/png',
-        transparent: true,
-      }).addTo(mapRef.current);
-      setWmsLayer2(newWmsLayer2);
-    }
-    else{
-      if (wmsLayer2) {
-        mapRef.current.removeLayer(wmsLayer2);
-        setWmsLayer2(null);
-      }
-    }
-    if(enable_citynames){
-      const newWmsLayer3 = L.tileLayer.wms(citynamesoverlay.url, {
-        layers: citynamesoverlay.layer, // Replace with your WMS layer name
-        format: 'image/png',
-        transparent: true,
-      }).addTo(mapRef.current);
-      setWmsLayer3(newWmsLayer3);
-    }
-    else{
-      if (wmsLayer3) {
-        mapRef.current.removeLayer(wmsLayer3);
-        setWmsLayer3(null);
-      }
-    }*/
       mapRef.current.on('click', (e) => {
         const lat = e.latlng.lat;  // Get the latitude (y)
         const lng = e.latlng.lng;  // Get the longitude (x)
@@ -473,7 +435,34 @@ const fetchAndPlotGeoJSON = async (url) => {
         return () => {
           mapRef.current.remove();
         };
-      }, [dispatch,layers,basemap, bounds]);
+      }, [dispatch,layers,basemap]);
+
+
+  // Update map bounds when Redux bounds change
+  useEffect(() => {
+    if (mapRef.current && bounds) {
+      const { west, east, south, north } = bounds;
+  
+      // Get the current bounds of the map
+      const currentBounds = mapRef.current.getBounds();
+  
+      // Check if the new bounds are significantly different from the current bounds
+      const areBoundsDifferent =
+        Math.abs(currentBounds.getWest() - west) > 0.01 ||
+        Math.abs(currentBounds.getEast() - east) > 0.01 ||
+        Math.abs(currentBounds.getSouth() - south) > 0.01 ||
+        Math.abs(currentBounds.getNorth() - north) > 0.01;
+  
+      if (areBoundsDifferent) {
+        // Update the map bounds only if they are significantly different
+        const newBounds = L.latLngBounds(
+          [south, west], // Southwest corner
+          [north, east] // Northeast corner
+        );
+        mapRef.current.fitBounds(newBounds);
+      }
+    }
+  }, [bounds]);
 
 
       useEffect(() => {

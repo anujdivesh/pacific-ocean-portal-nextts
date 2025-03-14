@@ -32,6 +32,7 @@ function Navigationbar({ topContent, mainContent }) {
   const [showLoginModal, setShowLoginModal] = useState(false); // State for controlling the login modal
   const [loginState, setLoginState] = useState({ errors: {}, success: false, message: "" }); // State for login form
   const [loading, setLoading] = useState(false); // Add a loading state
+  const [showSignupModal, setShowSignupModal] = useState(false);
 /*
   // Fetch session on component mount
   useEffect(() => {
@@ -116,6 +117,11 @@ function Navigationbar({ topContent, mainContent }) {
             className="sidebar-heading"
             style={{ paddingBottom: 13, color: "#FFF", backgroundColor: "#3f51b5" }}
           >
+              <img 
+    src="/oceanportal/COSPPaC_white_crop2.png" 
+    alt="Pacific Ocean" 
+    style={{ width: 25, height: 25, marginRight: 5,marginTop:-20, marginBottom:-15,marginLeft:-10 }} 
+  />
             Pacific Ocean Portal
           </div>
           <div className="list-group list-group-flush">
@@ -128,6 +134,11 @@ function Navigationbar({ topContent, mainContent }) {
       <div id="page-content-wrapper">
         <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "#3f51b5" }}>
           <Navbar.Brand id="navtitle" style={{ paddingLeft: 20, fontSize: 19.2 }}>
+          <img 
+    src="/oceanportal/COSPPaC_white_crop2.png" 
+    alt="Pacific Ocean" 
+    style={{ width: 25, height: 25, marginRight: 5,marginTop:-20, marginBottom:-15,marginLeft:-10 }} 
+  />
             Pacific Ocean Portal
           </Navbar.Brand>
           <div className="container-fluid">
@@ -221,9 +232,13 @@ function Navigationbar({ topContent, mainContent }) {
                       >
                         Login
                       </Button>
-                      <Link className="dropdown-item" href="/signup">
-                        Signup
-                      </Link>
+                      <Button
+  variant="link"
+  className="dropdown-item"
+  onClick={() => setShowSignupModal(true)}
+>
+  Signup
+</Button>
                     </div>
                   </li>
                 )}
@@ -234,9 +249,22 @@ function Navigationbar({ topContent, mainContent }) {
         <div className="container-fluid">{mainContent}</div>
       </div>
 
+      <Modal show={showSignupModal} onHide={() => setShowSignupModal(false)} centered className="custom-modal">
+  <Modal.Header closeButton style={{backgroundColor:'#3f51b5', color:'white'}} closeVariant="white">
+    <Modal.Title>Signup</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <p>Please contact <a href="mailto:cosppac@spc.int">cosppac@spc.int</a> for Registration.</p>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowSignupModal(false)}>
+      Close
+    </Button>
+  </Modal.Footer>
+</Modal>
       {/* Login Modal */}
       <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)} centered className="custom-modal">
-        <Modal.Header closeButton>
+        <Modal.Header closeButton style={{backgroundColor:'#3f51b5', color:'white'}} closeVariant="white">
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>
         <Modal.Body>
