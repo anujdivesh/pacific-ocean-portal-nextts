@@ -74,9 +74,22 @@ const Dashboard = () => {
                 <div id="map33">
                     <div className="sign-in__wrapper">
                         <Container>
-                            <h2 className='text-left mt-2'>
-                                Collections
-                            </h2>
+                        <div style={{
+        backgroundColor: '#f8f9fa',
+        width: '100vw', // Use viewport width to ensure full width
+        marginLeft: '-50vw', // Offset to account for default body padding/margin
+        left: '50%', // Center the div
+        position: 'relative', // Ensure proper positioning
+        padding: '40px 0', // Add more padding to make it taller
+        textAlign: 'center', // Center the text horizontally
+        display: 'flex', // Use flexbox to center vertically
+        justifyContent: 'center', // Horizontally center the content
+        alignItems: 'center' // Vertically center the content
+      }}>
+        <div style={{ maxWidth: '800px', textAlign: 'center' }}>
+          <h1>Dashboard Collections</h1>
+        </div>
+      </div>
 
                             <div className="row">
                                 {projects.map(card => (

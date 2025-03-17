@@ -1,7 +1,6 @@
 import L from 'leaflet';
 import $ from 'jquery';
 
-
 /**
  * Adds a WMS tile layer to a Leaflet map.
  *
@@ -12,13 +11,10 @@ import $ from 'jquery';
  * @param {string} [options.format='image/png'] - The format of the image requested from the WMS service.
  * @param {boolean} [options.transparent=true] - Whether the WMS layer is transparent.
  * @param {Object} [options.params] - Additional parameters to include in the WMS request.
- * @param {function} handleShow 
+ * @param {function} handleShow - Callback function to handle the "more..." link click.
  */
 
-
-
 const addWMSTileLayer = (map, url, options = {}, handleShow) => {
-
     // Set default options
     const defaultOptions = {
         layers: '',
@@ -36,11 +32,11 @@ const addWMSTileLayer = (map, url, options = {}, handleShow) => {
     });
 
     // Add the layer to the map
-   // wmsLayer.addTo(map);
+    wmsLayer.addTo(map);
 
-    //reload broken tiles
+    // Reload broken tiles
     const RETRY_LIMIT = 3; // Maximum number of retry attempts
-    const RETRY_DELAY = 3000; 
+    const RETRY_DELAY = 3000; // Delay between retries in milliseconds
 
     const handleTileError = (event) => {
         const tile = event.tile;
@@ -51,7 +47,7 @@ const addWMSTileLayer = (map, url, options = {}, handleShow) => {
                 }
             })
             .catch(err => {
-                console.error('Error checking tile URL:');
+                console.error('Error checking tile URL:', err);
             });
     };
 
@@ -75,7 +71,7 @@ const addWMSTileLayer = (map, url, options = {}, handleShow) => {
                 tile.src = src; // Reset src to reload the tile
                 retryTile(tile, src, attempt + 1); // Schedule next retry
             }, RETRY_DELAY);
-        } 
+        }
     };
 
     wmsLayer.on('tileerror', handleTileError);
@@ -90,7 +86,7 @@ const addWMSTileLayer = (map, url, options = {}, handleShow) => {
     const getFeatureInfo = (latlng, url, wmsLayer, map) => {
         const point = map.latLngToContainerPoint(latlng, map.getZoom());
         const size = map.getSize();
-        
+
         // Construct the GetFeatureInfo URL
         const params = {
             request: 'GetFeatureInfo',
@@ -119,7 +115,7 @@ const addWMSTileLayer = (map, url, options = {}, handleShow) => {
             success: function (data) {
                 const doc = (new DOMParser()).parseFromString(data, "text/html");
                 if (doc.body.innerHTML.trim().length > 0) {
-                    showFeatureInfoPopup(doc.body.innerHTML, latlng, map);
+                    showFeatureInfoPopup(doc.body.innerHTML, latlng, map, options.id, handleShow);
                 } else {
                     alert('No feature information available for this location.');
                 }
@@ -129,9 +125,9 @@ const addWMSTileLayer = (map, url, options = {}, handleShow) => {
             }
         });
     };
-/*
+
     // Function to show the feature info in a popup
-    const showFeatureInfoPopup = (content, latlng, map) => {
+    const showFeatureInfoPopup = (content, latlng, map, id, handleShow) => {
         const el = document.createElement('html');
         el.innerHTML = content;
 
@@ -142,88 +138,28 @@ const addWMSTileLayer = (map, url, options = {}, handleShow) => {
             featureInfo = p[5] ? p[5].textContent.trim() : "No Data";
         }
 
-        // Create the popup content
-        //const popupContent = `<p>${featureInfo}</p><p>Timeseries View</p>`;
-
-        /*const popupContent = `
-  <p>${featureInfo}</p>
-  <p>Timeseries View</p>
-  <a href="javascript:void(0);" onclick="handleShow()">Open Timeseries</a>
-`;
-
-const popupContent = `
-<p>${featureInfo}</p>
-<p>Timeseries View</p>
-<a href="javascript:void(0);" onclick="handleShow">Open Timeseries</a>
-`;
+        // Create popup content with a dynamic click handler for 'handleShow'
+        const popupContent = `
+            <p>Value: ${featureInfo}</p>
+            <a href="javascript:void(0);" class="open-timeseries-link" style="display: block;">&nbsp;more...</a>
+        `;
 
         // Show the popup
-        L.popup({ maxWidth: 800 })
+        const popup = L.popup({ maxWidth: 800 })
             .setLatLng(latlng)
             .setContent(popupContent)
             .openOn(map);
-    };*/
 
-    // Function to show the feature info in a popup
-const showFeatureInfoPopup = (content, latlng, map) => {
-    const el = document.createElement('html');
-    el.innerHTML = content;
-
-    // Example: assuming the feature info is in a table and extracting the text
-    const p = el.getElementsByTagName('td');
-    let featureInfo = "No Data";
-    if (p.length > 5) {
-        featureInfo = p[5] ? p[5].textContent.trim() : "No Data";
-    }
-
-    // Create popup content with a dynamic click handler for 'handleShow'
-    const popupContent = `
-    <p>Value: ${featureInfo}
-    <a href="javascript:void(0);" class="open-timeseries-link" style="display: block;">&nbsp;more...</a>
-    </p>
-`;
-
-
-    // Show the popup
-    const popup = L.popup({ maxWidth: 800 })
-        .setLatLng(latlng)
-        .setContent(popupContent)
-        .openOn(map);
-
-    // Attach event listener to the link inside the popup
-    const link = popup._contentNode.querySelector('.open-timeseries-link');
-    if (link) {
-        link.addEventListener('click', () => {
-            handleShow(); // This will now trigger the handleShow function
-        });
-    }
-};
+        // Attach event listener to the link inside the popup
+        const link = popup._contentNode.querySelector('.open-timeseries-link');
+        if (link) {
+            link.addEventListener('click', () => {
+                handleShow(id); // Pass the id to handleShow
+            });
+        }
+    };
 
     return wmsLayer; // Return the layer instance
 };
-
-    /*
-    const handleTileError = (event) => {
-      console.log('Force reloading tiles.')
-      const tile = event.tile;
-      const currentSrc = tile.src;
-      retryTile(tile, currentSrc, 1); // Start retrying with the first attempt
-    };
-
-    const retryTile = (tile, src, attempt) => {
-      if (attempt <= RETRY_LIMIT) {
-        setTimeout(() => {
-          tile.src = ''; // Clear the src to trigger a retry
-          tile.src = src; // Set the src again to reload the tile
-          retryTile(tile, src, attempt + 1); // Schedule the next retry attempt
-        }, RETRY_DELAY);
-      }
-    };
-
-    wmsLayer.on('tileerror', handleTileError);
-    
-    return wmsLayer; // Return the layer instance if needed
-};
-*/
 
 export default addWMSTileLayer;

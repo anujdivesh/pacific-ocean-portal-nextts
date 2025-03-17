@@ -33,6 +33,7 @@ function Navigationbar({ topContent, mainContent }) {
   const [loginState, setLoginState] = useState({ errors: {}, success: false, message: "" }); // State for login form
   const [loading, setLoading] = useState(false); // Add a loading state
   const [showSignupModal, setShowSignupModal] = useState(false);
+  const [showAboutusModal, setShowAboutusModal] = useState(false)
 /*
   // Fetch session on component mount
   useEffect(() => {
@@ -185,13 +186,14 @@ function Navigationbar({ topContent, mainContent }) {
                   Experts
                 </Link>
                 <li className="nav-item">
-                  <Link
-                    className={pathname == "/aboutus" ? "active-nav nav-link" : "nav-link"}
-                    href="/aboutus"
-                  >
-                    About us
-                  </Link>
-                </li>
+                <a
+                  className={pathname === "/aboutus" ? "active-nav nav-link" : "nav-link"}
+                  onClick={() => setShowAboutusModal(true)}
+                  style={{ cursor: 'pointer' }} // Add pointer cursor to make it look clickable
+                >
+                  About us
+                </a>
+              </li>
                
                 {isLoggedin ? (
                   <>
@@ -249,7 +251,95 @@ function Navigationbar({ topContent, mainContent }) {
         <div className="container-fluid">{mainContent}</div>
       </div>
 
-      <Modal show={showSignupModal} onHide={() => setShowSignupModal(false)} centered className="custom-modal">
+      <Modal
+  show={showAboutusModal}
+  onHide={() => setShowAboutusModal(false)}
+  size="xl"
+  centered
+  className="custom-modal"
+>
+  <Modal.Header
+    closeButton
+    style={{ backgroundColor: '#3f51b5', color: 'white' }}
+    closeVariant="white"
+  >
+    <Modal.Title>About us</Modal.Title>
+  </Modal.Header>
+  <Modal.Body style={{ padding: 0 }}> {/* Remove default padding to allow full-width content */}
+    {/* Grey Banner */}
+    <div
+      style={{
+        backgroundColor: '#f8f9fa',
+        width: '100%', // Span full width of the modal
+        padding: '40px 0', // Add padding to make it taller
+        textAlign: 'center', // Center the text horizontally
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <div style={{ maxWidth: '800px', textAlign: 'center' }}>
+        <h1>About Us</h1>
+      </div>
+    </div>
+
+    {/* Content Section */}
+    <div className="container" style={{ padding: '20px' }}> {/* Add padding for spacing */}
+      <div className="row">
+        <div className="col-sm-12">
+          <p>
+            The Pacific Ocean Portal is an online tool developed and maintained by the Climate and Oceans Support Program in the Pacific (COSPPac) and supported by the Australian and New Zealand Governments. The ocean portal provides access to historical, near real-time, and future ocean conditions, serving a wide array of ocean stakeholders across the Pacific region.
+          </p>
+          <br />
+          <p>
+            While the development of the Pacific Ocean Portal has been significantly supported by COSPPac, the Pacific Community extends its gratitude to the various data providers whose contributions have been instrumental in enabling access to their datasets through this platform. The collaboration with these data providers and projects ensures the delivery of oceanographic information for the region.
+          </p>
+        </div>
+      </div>
+      <br />
+      <div className="row">
+        {/* Developed & Funded By Section */}
+        <div className="logos d-flex flex-wrap justify-content-center">
+          <img
+            className="img-fluid"
+            src="/oceanportal/logos/cos2.png"
+            alt="supported-services"
+            width="8%"
+            height="5%"
+          />
+          <img
+            className="img-fluid"
+            src="/oceanportal/logos/aus_govt.png"
+            alt="supported-services"
+            width="8%"
+            height="5%"
+          />
+          <img
+            className="img-fluid"
+            src="/oceanportal/logos/spx.png"
+            alt="supported-services"
+            width="8%"
+            height="5%"
+          />
+          <img
+            className="img-fluid"
+            src="/oceanportal/logos/au2.png"
+            alt="supported-services"
+            width="8%"
+            height="5%"
+          />
+        </div>
+      </div>
+    </div>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" onClick={() => setShowAboutusModal(false)}>
+      Close
+    </Button>
+  </Modal.Footer>
+</Modal>
+
+      <Modal show={showSignupModal} onHide={() => setShowSignupModal(false)} size="lg"  centered className="custom-modal">
   <Modal.Header closeButton style={{backgroundColor:'#3f51b5', color:'white'}} closeVariant="white">
     <Modal.Title>Signup</Modal.Title>
   </Modal.Header>
@@ -263,7 +353,7 @@ function Navigationbar({ topContent, mainContent }) {
   </Modal.Footer>
 </Modal>
       {/* Login Modal */}
-      <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)} centered className="custom-modal">
+      <Modal show={showLoginModal} onHide={() => setShowLoginModal(false)} centered size="lg" className="custom-modal">
         <Modal.Header closeButton style={{backgroundColor:'#3f51b5', color:'white'}} closeVariant="white">
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>

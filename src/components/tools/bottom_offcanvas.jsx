@@ -13,17 +13,18 @@ import DynamicImage from './getMap'; // Import the new DynamicImage component
 import Download from './download';
 import TimeseriesWfs from './timeseries_wfs';
 
-function BottomOffCanvas({ isVisible }) {
-
+function BottomOffCanvas({ isVisible,id }) {
+  const currentId = useAppSelector((state) => state.offcanvas.currentId);
     const mapLayer = useAppSelector((state) => state.mapbox.layers);
    const [layerType, setLayerType] = useState('');
    
     // Effect to handle coordinate updates and API requests only when valid coordinates are present
     useEffect(() => {
+      if (currentId === id) {
         let layer_type = mapLayer[mapLayer.length - 1]?.layer_information.layer_type;
-        setLayerType(layer_type)
-      
-    }, [mapLayer]);
+        setLayerType(layer_type);
+      }
+    }, [mapLayer, currentId, id]);
 
   const data = {
     labels: ['January', 'February', 'March', 'April', 'May'],

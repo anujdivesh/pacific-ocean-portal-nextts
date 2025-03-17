@@ -38,7 +38,7 @@ const MyWorkbench = () => {
           cursor: 'pointer',
           marginTop: -22,
           paddingLeft: 30,
-          fontSize: 14
+          fontSize: 14,
         }}
       >
         <span>{children}</span>
@@ -49,6 +49,7 @@ const MyWorkbench = () => {
 
   const isVisible = useAppSelector((state) => state.offcanvas.isVisible);
   const mapLayer = useAppSelector((state) => state.mapbox.layers);
+  const currentId = useAppSelector((state) => state.offcanvas.currentId); // Get the currentId from Redux
   const _isMounted = useRef(true);
 
   // Check if layers exist in localStorage and dispatch them to Redux store
@@ -57,10 +58,10 @@ const MyWorkbench = () => {
       const savedLayers = localStorage.getItem('savedLayers');
       if (savedLayers) {
         const layers = JSON.parse(savedLayers);
-        
+
         // Dispatch to Redux store to load layers
-        layers.forEach(layer => {
-          dispatch(addMapLayer(layer));  // Assuming addMapLayer adds the layer to the map
+        layers.forEach((layer) => {
+          dispatch(addMapLayer(layer)); // Assuming addMapLayer adds the layer to the map
         });
       }
     }
@@ -80,56 +81,63 @@ const MyWorkbench = () => {
           <hr style={{ marginRight: -10, marginLeft: -12 }} />
           <p style={{ fontSize: '12px', marginTop: '-10px' }}>DATA SETS ( {mapLayer.length} )</p>
           <hr style={{ marginTop: -10, marginRight: -10, marginLeft: -12 }} />
-          {
-            mapLayer.map((item) => {
-              if (item.layer_information.layer_type == "WMS") {
-                return (
-              <Accordion key={item.id} defaultActiveKey={""} style={{ paddingBottom: 4 }}>
-                <Card eventkey={item.id} style={{ borderRadius: 0 }}>
-                  <Card.Header onClick={(e) => e.currentTarget.blur()} disabled={true}>
-                    <CheckBox item={item}/>
-                    <CustomToggle eventkey={item.id}> {item.layer_information.layer_title}</CustomToggle>
-                  </Card.Header>
-                  <Accordion.Collapse eventkey={item.id}>
-                    <Card.Body style={{ paddingLeft: 0, paddingRight: 0 }}>
-                      <ButtonGroupComp item={item} />
-                      <Opacity item={item} id={item.id} />
+          {mapLayer.map((item) => {
+            if (item.layer_information.layer_type === 'WMS') {
+              return (
+                <Accordion key={item.id} defaultActiveKey={''} style={{ paddingBottom: 4 }}>
+                  <Card eventkey={item.id} style={{ borderRadius: 0 }}>
+                    <Card.Header onClick={(e) => e.currentTarget.blur()} disabled={true}>
+                      <CheckBox item={item} />
+                      <CustomToggle eventkey={item.id}> {item.layer_information.layer_title}</CustomToggle>
+                    </Card.Header>
+                    <Accordion.Collapse eventkey={item.id}>
+                      <Card.Body style={{ paddingLeft: 0, paddingRight: 0 }}>
+                        <ButtonGroupComp item={item} />
+                        <Opacity item={item} id={item.id} />
 
-                      {item.layer_information.is_timeseries ? (
-                        <RangeSlider item={item} />
-                      ) : (
-                        <DateSelector item={item} period={'daily'} startDateStr={item.layer_information.timeIntervalStart} endDateStr={item.layer_information.timeIntervalEnd} />
-                      )}
-                      <ColorScale item={item} />
-                      {/* <Legend url={item.layer_information.legend_url} /> */}
-                      <BottomOffCanvas isVisible={isVisible} />
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
-               );
-              } else {
-                return (
-                  <Accordion key={item.id} defaultActiveKey={""} style={{ paddingBottom: 4 }}>
-                <Card eventkey={item.id} style={{ borderRadius: 0 }}>
-                  <Card.Header onClick={(e) => e.currentTarget.blur()} disabled={true}>
-                    <CheckBox item={item}/>
-                    <CustomToggle eventkey={item.id}> {item.layer_information.layer_title}</CustomToggle>
-                  </Card.Header>
-                  <Accordion.Collapse eventkey={item.id}>
-                    <Card.Body style={{ paddingLeft: 0, paddingRight: 0 }}>
-                      <ButtonGroupComp item={item} />
-                   
-                      <DateSelector item={item} period={'daily'} startDateStr={item.layer_information.timeIntervalStart} endDateStr={item.layer_information.timeIntervalEnd} />
-                      <BottomOffCanvas isVisible={isVisible} />
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
-                );
-              }
-            })
-          }
+                        {item.layer_information.is_timeseries ? (
+                          <RangeSlider item={item} />
+                        ) : (
+                          <DateSelector
+                            item={item}
+                            period={'daily'}
+                            startDateStr={item.layer_information.timeIntervalStart}
+                            endDateStr={item.layer_information.timeIntervalEnd}
+                          />
+                        )}
+                        <ColorScale item={item} />
+                        {/* <Legend url={item.layer_information.legend_url} /> */}
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              );
+            } else {
+              return (
+                <Accordion key={item.id} defaultActiveKey={''} style={{ paddingBottom: 4 }}>
+                  <Card eventkey={item.id} style={{ borderRadius: 0 }}>
+                    <Card.Header onClick={(e) => e.currentTarget.blur()} disabled={true}>
+                      <CheckBox item={item} />
+                      <CustomToggle eventkey={item.id}> {item.layer_information.layer_title}</CustomToggle>
+                    </Card.Header>
+                    <Accordion.Collapse eventkey={item.id}>
+                      <Card.Body style={{ paddingLeft: 0, paddingRight: 0 }}>
+                        <ButtonGroupComp item={item} />
+                        <DateSelector
+                          item={item}
+                          period={'daily'}
+                          startDateStr={item.layer_information.timeIntervalStart}
+                          endDateStr={item.layer_information.timeIntervalEnd}
+                        />
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              );
+            }
+          })}
+          {/* Render BottomOffCanvas only once, outside the loop */}
+          {currentId && <BottomOffCanvas isVisible={isVisible} id={currentId} />}
         </Col>
       )}
     </>

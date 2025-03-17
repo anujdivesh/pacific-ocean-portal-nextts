@@ -35,8 +35,8 @@ const MapBox = () => {
     const [wmsLayer2Details, setWmsLayer2Details] = useState(null);
 ;
     
-    const handleShow = () => {
-        dispatch(showoffCanvas());
+    const handleShow = (id) => {
+        dispatch(showoffCanvas(id));
     };
 
     const blueIcon = new L.Icon({
@@ -50,7 +50,7 @@ const MapBox = () => {
     
     // Function to fetch GeoJSON and plot blue markers
    // Function to fetch GeoJSON and plot blue markers
-    const fetchAndPlotGeoJSON = async (url) => {
+    const fetchAndPlotGeoJSON = async (url,id) => {
       try {
         const response = await fetch(url);
         const geojsonData = await response.json();
@@ -92,7 +92,7 @@ const MapBox = () => {
               var bbox = null;
               
               dispatch(setCoordinates({ x, y, sizex, sizey,bbox,station }));
-              dispatch(showoffCanvas());
+              dispatch(showoffCanvas(id));
 
             });
 
@@ -280,22 +280,10 @@ const MapBox = () => {
         if(layer.layer_information.layer_type == "WMS"){
       
       if(!layer.layer_information.is_timeseries){
-        /*
-        var wmsLayer = L.tileLayer.betterWms(layer.layer_information.url, {
-          layers: layer.layer_information.layer_name,
-          format: 'image/png',
-          transparent: true,
-          opacity: 1,
-          styles: layer.layer_information.style,
-          colorscalerange: layer.layer_information.colormin+", "+layer.layer_information.colormax,
-          abovemaxcolor: "extend",
-          belowmincolor: "transparent",
-          numcolorbands: 250,
-          time: layer.layer_information.timeIntervalEnd,
-      }).addTo(mapRef.current);
-      */
+    
 
         const wmsLayer = addWMSTileLayer(mapRef.current, layer.layer_information.url, {
+          id: layer.layer_information.id,
           layers: layer.layer_information.layer_name,
           format: 'image/png',
           transparent: true,
@@ -319,6 +307,7 @@ const MapBox = () => {
         var stylname = layer.layer_information.style.split(',');
         const bbox = [-23.5, -176, -15.5, -173];
         const wmsLayer = addWMSTileLayer(mapRef.current, layer.layer_information.url, {
+          id: layer.layer_information.id,
           layers: layername[0],
           format: 'image/png',
           transparent: true,
@@ -336,6 +325,7 @@ const MapBox = () => {
         layerGroup.addLayer(wmsLayer);
 
         const wmsLayer2 = addWMSTileLayer(mapRef.current, layer.layer_information.url, {
+          id: layer.layer_information.id,
           layers: layername[1],
           format: 'image/png',
           transparent: true,
@@ -353,6 +343,7 @@ const MapBox = () => {
       }
       else{
         const wmsLayer = addWMSTileLayer(mapRef.current, layer.layer_information.url, {
+          id: layer.layer_information.id,
           layers: layer.layer_information.layer_name,
           format: 'image/png',
           transparent: true,
@@ -384,7 +375,7 @@ const MapBox = () => {
     else{
       //PLOT marker here
       var geojson_url =  layer.layer_information.url;
-      fetchAndPlotGeoJSON(geojson_url);
+      fetchAndPlotGeoJSON(geojson_url, layer.layer_information.id);
     }
   }
     });
