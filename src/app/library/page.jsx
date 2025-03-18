@@ -6,7 +6,7 @@ import { useAppSelector } from '@/app/GlobalRedux/hooks';
 import '@/components/css/legendlibrary.css';
 import "leaflet-bing-layer";
 
-const Aboutus = () => {
+const Library = () => {
     const { center, zoom, bounds, maxBounds, layers, eezoverlay, enable_eez, enable_coastline, coastlineoverlay, citynamesoverlay, enable_citynames } = useAppSelector((state) => state.mapbox);
     const mapRef = useRef();
     const legendColorRef = useRef();
@@ -392,4 +392,4 @@ const Aboutus = () => {
     )
 }
 
-export default Aboutus;
+export default Library;
