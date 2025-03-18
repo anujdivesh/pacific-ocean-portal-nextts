@@ -86,7 +86,7 @@ export async function decrypt(session: string | undefined = "") {
 export async function decrypt(session: string | undefined = "") {
   try {
     if (!session) {
-      console.error("Session token is missing or empty.");
+     //console.error("Session token is missing or empty.");
       return null;
     }
 
@@ -97,7 +97,7 @@ export async function decrypt(session: string | undefined = "") {
 
 
     return payload;
-  } catch (error) {
+  } catch  {
     return null;
   }
 }

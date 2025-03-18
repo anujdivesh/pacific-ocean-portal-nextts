@@ -50,6 +50,7 @@ const MapBox = () => {
     
     // Function to fetch GeoJSON and plot blue markers
    // Function to fetch GeoJSON and plot blue markers
+   /*
     const fetchAndPlotGeoJSON = async (url,id) => {
       try {
         const response = await fetch(url);
@@ -102,7 +103,124 @@ const MapBox = () => {
       } catch (error) {
         console.error('Error fetching GeoJSON data:', error);
       }
-    };
+    };*/
+
+       const fetchAndPlotGeoJSON = async (url,id) => {
+            try {
+                // Remove existing GeoJSON layer if it exists
+            
+    
+                // Fetch the GeoJSON data
+                const response = await fetch(url);
+                const geojsonData = await response.json();
+    
+                // Normalize longitude values to the range [-180, 180]
+                const normalizeLongitude = (lon) => {
+                    while (lon > 180) lon -= 360;
+                    while (lon < -180) lon += 360;
+                    return lon;
+                };
+    
+                // Process the GeoJSON data to handle points near the dateline
+                const processGeoJSON = (geojson) => {
+                    return {
+                        ...geojson,
+                        features: geojson.features.map(feature => {
+                            const geometry = feature.geometry;
+                            if (geometry.type === 'Point') {
+                                const [lon, lat] = geometry.coordinates;
+                                const normalizedLon = normalizeLongitude(lon);
+    
+                                // If the point is near the dateline, create a duplicate on the other side
+                                if (Math.abs(normalizedLon) > 150) { // Adjusted threshold
+                                    return [
+                                        {
+                                            ...feature,
+                                            geometry: {
+                                                ...geometry,
+                                                coordinates: [normalizedLon, lat],
+                                            },
+                                        },
+                                        {
+                                            ...feature,
+                                            geometry: {
+                                                ...geometry,
+                                                coordinates: [normalizedLon + 360, lat],
+                                            },
+                                        },
+                                    ];
+                                }
+    
+                                return {
+                                    ...feature,
+                                    geometry: {
+                                        ...geometry,
+                                        coordinates: [normalizedLon, lat],
+                                    },
+                                };
+                            }
+                            return feature;
+                        }).flat(), // Flatten the array in case of duplicated points
+                    };
+                };
+    
+                // Process the GeoJSON data
+                const processedGeoJSON = processGeoJSON(geojsonData);
+    
+                // Plot the processed GeoJSON data with blue markers and popups
+                const newGeojsonLayer = L.geoJSON(processedGeoJSON, {
+                    id : "tide_gugage",
+                    pointToLayer: function (feature, latlng) {
+                        // Create a marker with a blue icon
+                        const marker = L.marker(latlng, { icon: blueIcon });
+    
+                        // Check if the feature has a 'name' property for popup content
+                        const popupContent = `
+                            ${feature.properties.station_na || "No name provided"}
+                        `;
+    
+                        // Add a popup to the marker
+                        marker.bindPopup(popupContent);
+    
+                        // Attach a custom event handler to the popup's link
+                        marker.on('popupopen', () => {
+                            const link = document.querySelector('.popup-link');
+                            if (link) {
+                                link.addEventListener('click', (e) => {
+                                    e.preventDefault();
+                                    // Dispatch the action when the link is clicked
+                                });
+                            }
+                        });
+    
+                        marker.on('click', () => {
+                            console.log('hello');
+                            // Log the 'PORT_NAME' property of the feature
+                            var station = feature.properties.station_id;
+                            var x = null;
+                            var y = null;
+                            var sizex = null;
+                            var sizey = null;
+                            var bbox = null;
+                            dispatch(setCoordinates({ x, y, sizex, sizey,bbox,station }));
+                            dispatch(showoffCanvas(id));
+                        });
+    
+                        return marker; // Return the marker with the popup attached
+                    },
+                });
+    
+                // Add the GeoJSON layer to the map
+                newGeojsonLayer.addTo(mapRef.current);
+    
+                // Store the new GeoJSON layer in state
+              //  setGeojsonLayer(newGeojsonLayer);
+    
+            } catch (error) {
+                console.error('Error fetching GeoJSON data:', error);
+            }
+        };
+    
 
 
 
