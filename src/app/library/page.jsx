@@ -2,10 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
-import { Container } from 'react-bootstrap';
-import { usePathname } from 'next/navigation';
-import { FaSearch } from "react-icons/fa"; // Import the search icon
-import { useAppSelector, useAppDispatch } from '@/app/GlobalRedux/hooks';
+import { useAppSelector } from '@/app/GlobalRedux/hooks';
 import '@/components/css/legendlibrary.css';
 import "leaflet-bing-layer";
 
