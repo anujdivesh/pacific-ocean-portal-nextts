@@ -12,7 +12,7 @@ export default function ClientAuth() {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const response = await fetch("/oceanportal/api/session");
+        const response = await fetch("/api/session");
         const data = await response.json();
         if (data.isLoggedin) {
           dispatch(loginAction()); // Update Redux store

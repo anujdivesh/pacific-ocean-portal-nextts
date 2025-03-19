@@ -6,6 +6,7 @@ import '@/components/css/card.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAppSelector } from '@/app/GlobalRedux/hooks'
+import { get_url } from '@/components/json/urls';
 
 const Dashboard = () => {
     const [projects, setProjects] = useState([]);
@@ -22,7 +23,7 @@ const Dashboard = () => {
         
         const fetchProjects = async () => {
             try {
-                const accountResponse = await fetch("https://dev-oceanportal.spc.int/middleware/api/account/", {
+                const accountResponse = await fetch(get_url('root-path')+"/middleware/api/account/", {
                     method: "GET",
                     headers: {
                       Authorization: `Bearer ${token}`,
@@ -36,7 +37,7 @@ const Dashboard = () => {
                       }
 
                   
-                const response = await fetch('https://dev-oceanportal.spc.int/middleware/api/dashboard/?country_id='+countryId+'&format=json', {
+                const response = await fetch(get_url('root-path')+'/middleware/api/dashboard/?country_id='+countryId+'&format=json', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,

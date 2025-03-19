@@ -3,6 +3,7 @@ import { useAppSelector } from '@/app/GlobalRedux/hooks';
 import { Modal, Button } from 'react-bootstrap';
 import { Spinner } from 'react-bootstrap'; // Import Bootstrap Spinner
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'; // Importing icons from react-icons
+import { get_url } from '@/components/json/urls';
 
 function DynamicImage({ height }) {
   const mapLayer = useAppSelector((state) => state.mapbox.layers);
@@ -43,7 +44,7 @@ function DynamicImage({ height }) {
         const result = generateDateArray(start_date, end_date, step);
 
         const dynamicImages = result.map((date) => 
-          `https://opmmiddleware.gem.spc.int/cgi-bin/getMap.py?region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}`
+          get_url('getMap')+`region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}`
         );
 
         setImages(dynamicImages); // Update the images array with the generated URLs
@@ -54,7 +55,7 @@ function DynamicImage({ height }) {
         const result_str = layerInformation.specific_timestemps;
         const result = result_str.split(",");
         const dynamicImages = result.map((date) => 
-          `https://opmmiddleware.gem.spc.int/cgi-bin/getMap.py?region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}Z`
+          get_url('getMap')+`region=`+savedRegion+`&layer_map=`+layerInformation.id+`&units=null&coral=False&resolution=h&time=${date}Z`
         );
 
         setImages(dynamicImages); // Update images with the specific timestamps

@@ -119,7 +119,7 @@ function Navigationbar({ topContent, mainContent }) {
             style={{ paddingBottom: 13, color: "#FFF", backgroundColor: "#3f51b5" }}
           >
               <img 
-    src="/oceanportal/COSPPaC_white_crop2.png" 
+    src="/COSPPaC_white_crop2.png" 
     alt="Pacific Ocean" 
     style={{ width: 25, height: 25, marginRight: 5,marginTop:-20, marginBottom:-15,marginLeft:-10 }} 
   />
@@ -136,7 +136,7 @@ function Navigationbar({ topContent, mainContent }) {
         <nav className="navbar navbar-expand-lg navbar-dark" style={{ backgroundColor: "#3f51b5" }}>
           <Navbar.Brand id="navtitle" style={{ paddingLeft: 20, fontSize: 19.2 }}>
           <img 
-    src="/oceanportal/COSPPaC_white_crop2.png" 
+    src="/COSPPaC_white_crop2.png" 
     alt="Pacific Ocean" 
     style={{ width: 25, height: 25, marginRight: 5,marginTop:-20, marginBottom:-15,marginLeft:-10 }} 
   />
@@ -302,28 +302,28 @@ function Navigationbar({ topContent, mainContent }) {
         <div className="logos d-flex flex-wrap justify-content-center">
           <img
             className="img-fluid"
-            src="/oceanportal/logos/cos2.png"
+            src="/logos/cos2.png"
             alt="supported-services"
             width="8%"
             height="5%"
           />
           <img
             className="img-fluid"
-            src="/oceanportal/logos/aus_govt.png"
+            src="/logos/aus_govt.png"
             alt="supported-services"
             width="8%"
             height="5%"
           />
           <img
             className="img-fluid"
-            src="/oceanportal/logos/spx.png"
+            src="/logos/spx.png"
             alt="supported-services"
             width="8%"
             height="5%"
           />
           <img
             className="img-fluid"
-            src="/oceanportal/logos/au2.png"
+            src="/logos/au2.png"
             alt="supported-services"
             width="8%"
             height="5%"

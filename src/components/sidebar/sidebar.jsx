@@ -13,6 +13,7 @@ import SideOffCanvas from '../tools/side_offcanvas';
 import {  hideoffCanvas  } from '@/app/GlobalRedux/Features/offcanvas/offcanvasSlice';
 import { MdAddCircleOutline } from "react-icons/md";
 import { CgMoreO } from "react-icons/cg";
+import { get_url } from '@/components/json/urls';
 
 const ExploreModal = dynamic(() => import('@/components/tools/model'), {ssr: false})
 
@@ -48,7 +49,7 @@ const SideBar = () => {
     // Fetch regions data from API
     useEffect(() => {
       // Example API URL - replace with your actual API endpoint
-      fetch('https://dev-oceanportal.spc.int/middleware/api/country/?format=json')
+      fetch(get_url('country'))
         .then((response) => response.json())
         .then((data) => {
           setRegions(data); // Set regions data to state

@@ -37,7 +37,7 @@ const ExploreModal = ({ show, onClose, title, bodyContent }) => {
   useEffect(() => {
     const fetchSession = async () => {
       try {
-        const response = await fetch("/oceanportal/api/session");
+        const response = await fetch("/api/session");
         const data = await response.json();
         setUserId(data.userId); // Set userId when the session is fetched
       } catch (error) {
@@ -52,7 +52,7 @@ const ExploreModal = ({ show, onClose, title, bodyContent }) => {
     if (!userId) return;
     setLoading(true);
     try {
-      const response = await fetch(`https://dev-oceanportal.spc.int/middleware/api/tailored_menu/?country_id=4&format=json`, {
+      const response = await fetch(get_url('tailored_menu'), {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${userId}`,

@@ -51,7 +51,7 @@ function Download({ height }) {
   </div>
   <div style={{ display: 'flex', marginTop: '20px' }}>
   <img
-    src="/oceanportal/python.jpg" // Replace with actual URL or path to your first logo
+    src="/python.jpg" // Replace with actual URL or path to your first logo
     alt="Logo 1"
     style={{
         marginTop:'-10px',
@@ -61,7 +61,7 @@ function Download({ height }) {
     }}
   />
   <img
-    src="/oceanportal/xarray.png" // Replace with actual URL or path to your second logo
+    src="/xarray.png" // Replace with actual URL or path to your second logo
     alt="Logo 2"
     style={{
       width: '120px', // Adjust size as needed
@@ -69,7 +69,7 @@ function Download({ height }) {
     }}
   />
     <img
-    src="/oceanportal/unidata.png" // Replace with actual URL or path to your second logo
+    src="/unidata.png" // Replace with actual URL or path to your second logo
     alt="Logo 3"
     style={{
       width: '120px', // Adjust size as needed

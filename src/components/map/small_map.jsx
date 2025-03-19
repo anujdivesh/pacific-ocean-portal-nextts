@@ -157,7 +157,7 @@ const SmallMap = ({currentDataset}) => {
         center: [-8, 179.3053],
        });
      
-       const baselayer = L.tileLayer('https://opmmiddleware.gem.spc.int/tile/{z}/{x}/{y}.png', {
+       const baselayer = L.tileLayer('https://spc-osm.spc.int/tile/{z}/{x}/{y}.png', {
         attribution: '&copy; Pacific Community (OSM)',
         detectRetina: true
     }).addTo(mapContainer2.current);

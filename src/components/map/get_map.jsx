@@ -40,11 +40,11 @@ const MapBox = () => {
     };
 
     const blueIcon = new L.Icon({
-      iconUrl:  "/oceanportal/blue_marker.png", // URL for the blue marker icon
+      iconUrl:  "/blue_marker.png", // URL for the blue marker icon
       iconSize: [25, 41], // Size of the icon
       iconAnchor: [12, 41], // Anchor point of the icon
       popupAnchor: [1, -34], // Popup anchor
-      shadowUrl: '/oceanportal/shadow.png', // Shadow of the marker
+      shadowUrl: '/shadow.png', // Shadow of the marker
       shadowSize: [41, 41], // Size of the shadow
     });
     
@@ -245,7 +245,7 @@ const MapBox = () => {
       legendColorRef2.current = L.control({ position: "bottomleft", id:22 });
       legendColorRef2.current.onAdd = function() {
           var div = L.DomUtil.create("div", "legend");
-          div.innerHTML += "<img src='/oceanportal/north_arrow.png' alt='Legend' width='50px' height='60px'>";
+          div.innerHTML += "<img src='/north_arrow.png' alt='Legend' width='50px' height='60px'>";
           div.style.backgroundColor = "transparent";
           div.style.marginLeft = '-1px';
           //
@@ -259,7 +259,7 @@ const MapBox = () => {
       legendColorRef3.current = L.control({ position: "bottomright", id:23  });
       legendColorRef3.current.onAdd = function() {
           var div = L.DomUtil.create("div", "legend");
-          div.innerHTML += "<img src='/oceanportal/COSPPacMap.png' alt='Legend' width='150px' height='120px'>";
+          div.innerHTML += "<img src='/COSPPacMap.png' alt='Legend' width='150px' height='120px'>";
           div.style.backgroundColor = "transparent";
           div.style.marginBottom = '-35px';
           div.style.marginRight = '-12px';

@@ -69,29 +69,29 @@ const WelcomeModal = () => {
 
         <p style={{  color: 'grey',fontSize:14 }}>Countries supported:</p>
         <div className="logos d-flex flex-wrap justify-content-center" style={{ gap: '1px', maxWidth: '100%' }}>
-          <img className="img-fluid" src="/oceanportal/flags/CK.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/FM.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/FJ.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/KI.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/MH.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/NR.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/NU.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/PW.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/PNG.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/WS.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/SB.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/TO.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/TV.jpg" alt="supported-services" width="8%" height="4%" />
-          <img className="img-fluid" src="/oceanportal/flags/VU.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/CK.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/FM.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/FJ.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/KI.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/MH.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/NR.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/NU.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/PW.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/PNG.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/WS.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/SB.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/TO.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/TV.jpg" alt="supported-services" width="8%" height="4%" />
+          <img className="img-fluid" src="/flags/VU.jpg" alt="supported-services" width="8%" height="4%" />
         </div>
 
         {/* Developed & Funded By Section */}
         <p style={{  color: 'grey',fontSize:14 }}>Developed & Funded by:</p>
         <div className="logos d-flex flex-wrap justify-content-center">
-          <img className="img-fluid" src="/oceanportal/logos/cos2.png" alt="supported-services" width="8%" height="10%" />
-          <img className="img-fluid" src="/oceanportal/logos/aus_govt.png" alt="supported-services" width="8%" height="10%" />
-          <img className="img-fluid" src="/oceanportal/logos/spx.png" alt="supported-services" width="8%" height="10%" />
-          <img className="img-fluid" src="/oceanportal/logos/au2.png" alt="supported-services" width="8%" height="10%" />
+          <img className="img-fluid" src="/logos/cos2.png" alt="supported-services" width="8%" height="10%" />
+          <img className="img-fluid" src="/logos/aus_govt.png" alt="supported-services" width="8%" height="10%" />
+          <img className="img-fluid" src="/logos/spx.png" alt="supported-services" width="8%" height="10%" />
+          <img className="img-fluid" src="/logos/au2.png" alt="supported-services" width="8%" height="10%" />
         </div>
 
         <br />

@@ -9,7 +9,7 @@ const mapSlice = createSlice({
     layers: [],
     basemap: {
       //url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png',
-      url: 'https://opmmiddleware.gem.spc.int/tile/{z}/{x}/{y}.png',
+      url: 'https://spc-osm.spc.int/tile/{z}/{x}/{y}.png',
       attribution: '&copy; Pacific Community SPC',
     },
     eezoverlay: {
