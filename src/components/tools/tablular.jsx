@@ -210,9 +210,7 @@ const [enabledTable, setEnabledTable] = useState(false);
   return (
     <div style={{ display: 'flex', height: `${height}px` }}>
       <div>
-        <p style={{ fontSize: 13 }}>
-          Dataset: {mapLayer[lastlayer.current]?.layer_information?.layer_title}
-        </p>
+    
         <table
           style={{
             width: '100%',

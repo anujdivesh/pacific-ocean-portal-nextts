@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import 'chart.js/auto'; // Import Chart.js
 import { useAppSelector } from '@/app/GlobalRedux/hooks';
-import { Spinner } from 'react-bootstrap'; 
+import { Spinner } from 'react-bootstrap';
 
 // Importing dynamic line chart component
 const Line = dynamic(() => import('react-chartjs-2').then((mod) => mod.Line), {
@@ -34,7 +34,7 @@ function Timeseries({ height }) {
 
   const [selectedDatasets, setSelectedDatasets] = useState({});
   const [datasetsConfig, setDatasetsConfig] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);  // Loading state
+  const [isLoading, setIsLoading] = useState(false); // Loading state
 
   const { x, y, sizex, sizey, bbox } = useAppSelector((state) => state.coordinate.coordinates);
   const [enabledChart, setEnabledChart] = useState(false);
@@ -112,31 +112,31 @@ function Timeseries({ height }) {
 
         if (layerInformation) {
           const { timeseries_variables, timeseries_variable_label, timeseries_url, timeIntervalStartOriginal, timeIntervalEnd, enable_chart_timeseries, url } = layerInformation;
-          if (enable_chart_timeseries){
-          const variables = timeseries_variables.split(',');
-          const labels = timeseries_variable_label.split(',');
-          const query_url = timeseries_url;
-          const time_range = timeIntervalStartOriginal + "/" + timeIntervalEnd;
-          const enable_chart = enable_chart_timeseries;
-          setEnabledChart(enable_chart);
+          if (enable_chart_timeseries) {
+            const variables = timeseries_variables.split(',');
+            const labels = timeseries_variable_label.split(',');
+            const query_url = timeseries_url;
+            const time_range = timeIntervalStartOriginal + "/" + timeIntervalEnd;
+            const enable_chart = enable_chart_timeseries;
+            setEnabledChart(enable_chart);
 
-          const newDatasetsConfig = variables.map((variable, index) => ({
-            key: variable,
-            label: labels[index],
-            layer: variable,
-            query_url: url + "?" + query_url,
-            timerange: time_range,
-          }));
+            const newDatasetsConfig = variables.map((variable, index) => ({
+              key: variable,
+              label: labels[index],
+              layer: variable,
+              query_url: url + "?" + query_url,
+              timerange: time_range,
+            }));
 
-          setDatasetsConfig(newDatasetsConfig);
+            setDatasetsConfig(newDatasetsConfig);
 
-          const newSelectedDatasets = variables.reduce((acc, variable, index) => {
-            acc[variable] = index === 0;
-            return acc;
-          }, {});
+            const newSelectedDatasets = variables.reduce((acc, variable, index) => {
+              acc[variable] = index === 0;
+              return acc;
+            }, {});
 
-          setSelectedDatasets(newSelectedDatasets);
-        }
+            setSelectedDatasets(newSelectedDatasets);
+          }
         }
       }
     }
@@ -187,8 +187,7 @@ function Timeseries({ height }) {
         display: 'flex',
         alignItems: 'center',
       }}>
-      
-      <p style={{ fontSize: 16, color: '#333' }}>Click on map to retrieve data.</p>
+        <p style={{ fontSize: 16, color: '#333' }}>Click on map to retrieve data.</p>
       </div>
     );
   }
@@ -204,21 +203,10 @@ function Timeseries({ height }) {
         display: 'flex',
         alignItems: 'center',
       }}>
-      
-      <p style={{ fontSize: 16, color: '#333' }}> This Feature is disabled.</p>
+        <p style={{ fontSize: 16, color: '#333' }}> This Feature is disabled.</p>
       </div>
     );
   }
-
-  const spinnerStyle = {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: `${height}px`,
-    fontSize: '20px',
-    color: '#007bff',
-    fontWeight: 'bold',
-  };
 
   if (isLoading) {
     return (
@@ -231,20 +219,18 @@ function Timeseries({ height }) {
         display: 'flex',
         alignItems: 'center',
       }}>
-        <Spinner animation="border" role="status" variant="primary"/>
-                   <span style={{ marginLeft: '10px', fontSize: '18px' }}>Fetching data from api...</span>
+        <Spinner animation="border" role="status" variant="primary" />
+        <span style={{ marginLeft: '10px', fontSize: '18px' }}>Fetching data from api...</span>
       </div>
     );
   }
 
   return (
-    <div style={{ display: 'flex', height: `${height}px` }}>
-      <div style={{ marginRight: '20px', display: 'flex', flexDirection: 'column' }}>
-        <p style={{ fontSize: 12 }}>
-          DS: {mapLayer[lastlayer.current]?.layer_information?.layer_title}
-        </p>
+    <div style={{ width: '100%', height: `${height}px`, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Dataset Checkboxes */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', padding: '10px', backgroundColor: '#f9f9f9', borderBottom: '1px solid #ddd' }}>
         {datasetsConfig.map((dataset) => (
-          <label key={dataset.key} style={{ fontSize: '13px', marginBottom: '0px' }}>
+          <label key={dataset.key} style={{ fontSize: '13px' }}>
             <input
               type="checkbox"
               checked={selectedDatasets[dataset.key]}
@@ -256,15 +242,8 @@ function Timeseries({ height }) {
         ))}
       </div>
 
-      <div
-        style={{
-          width: '1px',
-          backgroundColor: '#ccc',
-          margin: '0 20px',
-        }}
-      ></div>
-
-      <div style={{ flex: 1, position: 'relative' }}>
+      {/* Chart */}
+      <div style={{ flex: 1, position: 'relative', width: '100%', height: `calc(${height}px - 50px)` }}>
         <Line
           data={chartData}
           options={{
@@ -285,7 +264,7 @@ function Timeseries({ height }) {
               },
             },
           }}
-          height={height}
+          height={height - 50} // Adjust height to account for checkboxes
         />
       </div>
     </div>

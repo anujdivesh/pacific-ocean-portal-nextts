@@ -362,22 +362,13 @@ function Navigationbar({ topContent, mainContent }) {
             <Form.Group controlId="username">
               <Form.Label>Username</Form.Label>
               <Form.Control type="text" name="username" required />
-              {loginState.errors?.username && (
-                <Form.Text className="text-danger">{loginState.errors.username.join(", ")}</Form.Text>
-              )}
             </Form.Group>
             <Form.Group controlId="password">
               <Form.Label>Password</Form.Label>
               <Form.Control type="password" name="password" required />
-              {loginState.errors?.password && (
-                <Form.Text className="text-danger">{loginState.errors.password.join(", ")}</Form.Text>
-              )}
+           
             </Form.Group>
-            {loginState.message && (
-              <Form.Text className={loginState.success ? "text-success" : "text-danger"}>
-                {loginState.message}
-              </Form.Text>
-            )}
+         
             <Button variant="primary" type="submit" className="mt-3" disabled={loading}>
               {loading ? (
                <><span className="ms-2">Logging in...</span>  <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -385,7 +376,13 @@ function Navigationbar({ topContent, mainContent }) {
               ) : (
                 "Login"
               )}
+              
             </Button>
+            {loginState.message && (
+              <Form.Text className={loginState.success ? "text-success" : "text-danger"} style={{ paddingLeft:'10px'}}>
+                {loginState.message}
+              </Form.Text>
+            )}
           </Form>
         </Modal.Body>
       </Modal>
